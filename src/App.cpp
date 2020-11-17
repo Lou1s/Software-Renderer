@@ -6,7 +6,7 @@
 
 #define SCREEN_TEST 0
 App::App() :
-    _raytracer(nullptr),
+    _rasteriser(nullptr),
     _display(nullptr),
     _quit(false)
 {
@@ -19,8 +19,8 @@ App::~App()
 }
 
 void App::init() {
-    _display = std::make_shared<Display>(1600, 1200, "Software Raytracer");
-    _raytracer = std::make_unique<Rasteriser>(_display);
+    _display = std::make_shared<Display>(1600, 1200, "Software Renderer");
+    _rasteriser = std::make_unique<Rasteriser>(_display);
 
 }
 

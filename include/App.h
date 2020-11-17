@@ -8,7 +8,7 @@ class Rasteriser;
 class App
 {
 private:
-    std::unique_ptr<Rasteriser> _raytracer;
+    std::unique_ptr<Rasteriser> _rasteriser;
     std::shared_ptr<Display> _display;
     bool _quit;
 public:
