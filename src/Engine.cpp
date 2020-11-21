@@ -4,7 +4,6 @@
 #include <math.h>
 #include <SDL_stdinc.h>
 
-#define SCREEN_TEST 0
 Engine::Engine() :
     _rasteriser(nullptr),
     _display(nullptr),
@@ -19,7 +18,10 @@ Engine::~Engine()
 }
 
 void Engine::init() {
-    _display = std::make_shared<Display>(1600, 1200, "Software Renderer");
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_DisplayMode display_mode;
+    SDL_GetCurrentDisplayMode(0, &display_mode);
+    _display = std::make_shared<Display>(display_mode.w, display_mode.h, "Software Renderer");
     _rasteriser = std::make_unique<Rasteriser>(_display);
     _is_running = true;
 }
@@ -46,15 +48,7 @@ void Engine::processInput() {
 }
 
 void Engine::update() {
-#if SCREEN_TEST
-    int x = std::rand() % _display->getWidth();
-    int y = std::rand() % _display->getHeight();
-    int r = std::rand() % 255;
-    int g = std::rand() % 255;
-    int b = std::rand() % 255;
-    _display->drawPixel(x, y, r, g, b, 254);
-#endif
-    
+    _rasteriser->drawGrid();
 }
 
 void Engine::render() {

@@ -11,7 +11,6 @@ Display::Display(long long width, long long height, std::string title):
     _frame_texture(nullptr, &SDL_DestroyTexture),
     _window(nullptr, &SDL_DestroyWindow)
 {
-    SDL_Init(SDL_INIT_VIDEO);
     _window.reset(SDL_CreateWindow(
                 _title.c_str(),
                 SDL_WINDOWPOS_CENTERED,
@@ -28,12 +27,12 @@ Display::Display(long long width, long long height, std::string title):
     SDL_SetTextureBlendMode(_frame_texture.get(), SDL_BLENDMODE_BLEND);
 
 
-    _pixel_buffer.reset(new Uint32[width * height]);
-    memset(_pixel_buffer.get(), 0x00000000, width * height * sizeof(Uint32));
+    _pixel_buffer.reset(new Uint32[_width * _height]);
+    memset(_pixel_buffer.get(), 0x00000000, _width * _height * sizeof(Uint32));
 
 }
 
-void Display::drawPixel(int x, int y, Uint32 color) {
+void Display::drawPixel(int x, int y, Uint32 colour) {
     if (x >= _width || y >= _height) {
         return;
     }
@@ -41,7 +40,7 @@ void Display::drawPixel(int x, int y, Uint32 color) {
         return;
     }
 
-    _pixel_buffer.get()[y * _width + x] = color;
+    _pixel_buffer.get()[y * _width + x] = colour;
 }
 
 void Display::drawPixel(int x, int y, int r, int g, int b, int a) {
@@ -63,12 +62,7 @@ void Display::update() {
 
     SDL_RenderCopy(_SDL_renderer.get(), _frame_texture.get(), NULL, NULL);
     SDL_RenderPresent(_SDL_renderer.get());
-
-#if not SCREEN_TEST
-
     memset(_pixel_buffer.get(), 0x00000000, _width * _height * sizeof(Uint32));
-
-#endif
 }
 
 int Display::getWidth() {

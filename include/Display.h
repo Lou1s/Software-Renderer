@@ -13,7 +13,7 @@ public:
     Display(long long width, long long height, std::string title); //used long long to get rid of MVS "overflow warning" that occurs when they are ints...bug?
     ~Display();
     void update();
-    void drawPixel(int x, int y, Uint32 color);
+    void drawPixel(int x, int y, Uint32 colour);
     void drawPixel(int x, int y, int r, int g, int b, int a);
     int getHeight();
     int getWidth();

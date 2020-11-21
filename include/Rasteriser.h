@@ -9,6 +9,7 @@ class Rasteriser
 	~Rasteriser();
 	void drawLine();
 	void drawTriangle();
+	void drawGrid();
 private:
 	std::shared_ptr<Display> _display;
 };
