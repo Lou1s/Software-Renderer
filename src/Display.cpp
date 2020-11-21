@@ -44,15 +44,13 @@ void Display::drawPixel(int x, int y, Uint32 colour) {
 }
 
 void Display::drawPixel(int x, int y, int r, int g, int b, int a) {
-    std::cout << "colour: " << std::endl << "r: " << r << std::endl << "g: " << g << std::endl <<  "b: " << b << std::endl <<  "a: " << a << std::endl;
     Uint32 colour = (Uint8) a;
     colour <<= 8;
     colour |= (Uint8) r;
-   colour <<= 8;
-   colour |= (Uint8) g;
-   colour <<= 8;
-   colour |= (Uint8) b;
-    std::cout << "Uint32: " << +colour << std::endl;
+    colour <<= 8;
+    colour |= (Uint8) g;
+    colour <<= 8;
+    colour |= (Uint8) b;
     drawPixel(x, y, colour);
 }
 

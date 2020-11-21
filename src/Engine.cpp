@@ -49,6 +49,7 @@ void Engine::processInput() {
 
 void Engine::update() {
     _rasteriser->drawGrid();
+    _rasteriser->drawRectangle(600, 200, 400, 150, 0xFF7FFFD4);
 }
 
 void Engine::render() {
