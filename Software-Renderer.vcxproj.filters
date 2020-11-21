@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\App.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Display.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -27,15 +24,18 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\App.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Display.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Rasteriser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

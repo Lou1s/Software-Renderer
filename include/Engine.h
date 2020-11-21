@@ -5,17 +5,19 @@
 class Display;
 class Rasteriser;
 
-class App
+class Engine
 {
 private:
     std::unique_ptr<Rasteriser> _rasteriser;
     std::shared_ptr<Display> _display;
-    bool _quit;
+    bool _is_running;
 public:
-    App();
-    ~App();
+    Engine();
+    ~Engine();
     void init();
+    bool isRunning();
+    void processInput();
     void update();
-    void draw();
+    void render();
     void shutdown();
 };

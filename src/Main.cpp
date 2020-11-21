@@ -1,31 +1,21 @@
 #include <iostream>
-#include "../include/App.h"
+#include "../include/Engine.h"
 #include<SDL.h>
 #undef main
 
 int main()
 {
-    bool quit = false;
-    SDL_Event event;
-    auto app = std::make_unique<App>();
-    app->init();
+    std::unique_ptr<Engine> engine = std::make_unique<Engine>();
+    engine->init();
 
-
-
-    while (!quit)
+    while (engine->isRunning())
     {
-        SDL_PollEvent(&event);
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            quit = true;
-            break;
-        }
-        app->update();
-        app->draw();
+        engine->processInput();
+        engine->update();
+        engine->render();
 
     }
-    app->shutdown();
+    engine->shutdown();
     return 0;
 
 }

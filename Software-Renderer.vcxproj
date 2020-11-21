@@ -107,13 +107,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Display.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Rasteriser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\App.h" />
+    <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Display.h" />
     <ClInclude Include="include\Rasteriser.h" />
   </ItemGroup>

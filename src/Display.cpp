@@ -63,11 +63,12 @@ void Display::update() {
 
     SDL_RenderCopy(_SDL_renderer.get(), _frame_texture.get(), NULL, NULL);
     SDL_RenderPresent(_SDL_renderer.get());
-#if not SCREEN_TEST
-    memset(_pixel_buffer.get(), 0x00000000, _width * _height * sizeof(Uint32));
-#endif 
 
-   
+#if not SCREEN_TEST
+
+    memset(_pixel_buffer.get(), 0x00000000, _width * _height * sizeof(Uint32));
+
+#endif
 }
 
 int Display::getWidth() {

@@ -18,7 +18,6 @@ public:
     int getHeight();
     int getWidth();
 private:
-
     std::unique_ptr<Uint32> _pixel_buffer;
     long long _width;
     long long _height;
