@@ -31,9 +31,6 @@ Display::Display(long long width, long long height, std::string title):
     _pixel_buffer.reset(new Uint32[width * height]);
     memset(_pixel_buffer.get(), 0x00000000, width * height * sizeof(Uint32));
 
-
-    SDL_Init(SDL_INIT_VIDEO);
-
 }
 
 void Display::drawPixel(int x, int y, Uint32 color) {
