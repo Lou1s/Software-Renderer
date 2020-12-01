@@ -1,5 +1,6 @@
 #include "../include/Rasteriser.h"
 #include "../include/Display.h"
+#include "../include/MathUtils.h"
 
 Rasteriser::Rasteriser(std::shared_ptr<Display> disp) :
 	_display(disp)
