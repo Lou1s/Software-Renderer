@@ -115,6 +115,7 @@
   <ItemGroup>
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Display.h" />
+    <ClInclude Include="include\MathUtils.h" />
     <ClInclude Include="include\Rasteriser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
