@@ -12,6 +12,7 @@ class Rasteriser
 	void drawTriangle();
 	void drawGrid();
 	void drawRectangle(int x, int y, int width, int height, Uint32 colour);
+	void projectionTest();
 private:
 	std::shared_ptr<Display> _display;
 };

@@ -32,8 +32,21 @@ void Rasteriser::drawRectangle(int x, int y, int width, int height, Uint32 colou
 		}
 	}
 }
+//computes then draws a cube point cloud composed of 9*9*9 points in -1 to 1 on all axes
+void Rasteriser::projectionTest() {
+	int point_count = 0;
+	Vector3 cube_points[9 * 9 * 9];
+	for (float x = -1; x <= 1; x += 0.25) {
+		for (float y = -1; y <= 1; y += 0.25) {
+			for (float z = -1; z <= 1; z += 0.25) {
+				Vector3 new_point(x, y, z);
+				cube_points[point_count++] = new_point;
+			}
+		}
+	}
 
-Rasteriser::~Rasteriser()
-{
 }
+
+	Rasteriser::~Rasteriser()	{
+	}
 
