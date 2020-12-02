@@ -9,7 +9,7 @@ private:
 public:
 	Vec2() : _xy{ 0.0, 0.0 } {}
 	Vec2(T x, T y) : _xy{ x, y } {}
-	Vec2(const Vec2& vec) : _xy{ vec._xy[0]), vec._xy[1] } {}
+	Vec2(const Vec2& vec) : _xy{ vec._xy[0] , vec._xy[1] } {}
 
 	T getX() const { return _xy[0]; }
 	T getY() const { return _xy[1]; }
