@@ -7,16 +7,16 @@ class Vec2 {
 private:
 	T _xy[2];
 public:
-	Vec2() : _xy[0](0), _xy[1](0) {}
-	Vec2(T x, T y) : _xy[0](x), _xy[1](y) {}
-	Vec2(const Vec2& vec) : _xy[0](vec._xy[0]), _xy[1](vec._xy[1]) {}
+	Vec2() : _xy{ 0.0, 0.0 } {}
+	Vec2(T x, T y) : _xy{ x, y } {}
+	Vec2(const Vec2& vec) : _xy{ vec._xy[0]), vec._xy[1] } {}
 
 	T getX() const { return _xy[0]; }
 	T getY() const { return _xy[1]; }
 
 	void setX(const T x) { _xy[0] = x; }
 	void setY(const T y) { _xy[1] = y; }
-	
+
 	Vec2 operator+ (const Vec2& vec) const {
 		return Vec3(
 			_xy[0] + vec._xy[0],
@@ -33,7 +33,7 @@ public:
 		return Vec2(
 			_xy[0] * n,
 			_xy[1] * n,
-		);
+			);
 	}
 
 	void operator/= (T n) {
@@ -76,7 +76,7 @@ public:
 	T cross(const Vec2& vec) const {
 		return _xy[0] * vec._xy[1] - _xy[1] * vec._xy[0];
 	}
-	
+
 };
 
 typedef Vec2<float> Vector2;
@@ -87,9 +87,9 @@ class Vec3 {
 private:
 	T _xyz[3];
 public:
-	Vec3() : _xy[0](0), _xy[1](0), _xyz[2](3) {}
-	Vec3(T x, T y, T z) : _xyz[0](x), _xyz[1](y), _xyz[2](z) {}
-	Vec3(const Vec2& vec) : _xyz[0](vec._xyz[0]), _xyz[1](vec._xyz[1]), _xyz[2](vec._xyz[2]) {}
+	Vec3() : _xyz{ 0.0, 0.0, 0.0 } {}
+	Vec3(T x, T y, T z) : _xyz{ x, y, z } {}
+	Vec3(const Vec3& vec) : _xyz{ vec._xyz[0], vec._xyz[1], vec._xyz[2] } {}
 
 	T getX() const { return _xyz[0]; }
 	T getY() const { return _xyz[1]; }
