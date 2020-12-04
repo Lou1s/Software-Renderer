@@ -20,19 +20,19 @@ public:
 	Vec2 operator+ (const Vec2& vec) const {
 		return Vec3(
 			_xy[0] + vec._xy[0],
-			_xy[1] + vec._xy[1],
+			_xy[1] + vec._xy[1]
 			);
 	}
 	Vec2 operator- (const Vec2& vec) const {
 		return Vec2(
 			_xy[0] - vec._xy[0],
-			_xy[1] - vec._xy[1],
+			_xy[1] - vec._xy[1]
 			);
 	}
 	Vec2 operator* (T n) const {
 		return Vec2(
 			_xy[0] * n,
-			_xy[1] * n,
+			_xy[1] * n
 			);
 	}
 
