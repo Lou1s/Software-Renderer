@@ -1,52 +1,38 @@
 #include "../include/Rasteriser.h"
 #include "../include/Display.h"
-#include "../include/MathUtils.h"
+
 
 Rasteriser::Rasteriser(std::shared_ptr<Display> disp) :
 	_display(disp)
 {
+	_fov_factor = 128;
 }
 
-void Rasteriser::drawGrid() {
-	Uint32 grid_colour1 = 0xFF0000FF;
-	Uint32 grid_colour2 = 0xFF00FFFF;
-	for (int i = 0; i < _display->getWidth(); i += 100) {
-		for (size_t j = 0; j < _display->getHeight(); j++) {
-			_display->drawPixel(i, j, grid_colour1);
-		}
-	}
-
-	for (int i = 0; i < _display->getHeight(); i += 100) {
-		for (size_t j = 0; j < _display->getWidth(); j++) {
-			_display->drawPixel(j, i, grid_colour2);
+void Rasteriser::drawGrid(Uint32 grid_colour) {
+	for (int i = 0; i < _display->getWidth(); i += 10) {
+		for (size_t j = 0; j < _display->getHeight(); j += 10) {
+			_display->drawPixel(i, j, grid_colour);
 		}
 	}
 }
 
 void Rasteriser::drawRectangle(int x, int y, int width, int height, Uint32 colour)
 {
-	std::cout << "drawing rectangle, height X width " << height << "X" << width << " pos: (" << x << "," << y << ")" << std::endl;
 	for (size_t i = 0; i < height; i++) {
 		for (size_t j = 0; j < width; j++) {
-			_display->drawPixel(i + width, j + height, colour);
-		}
-	}
-}
-//computes then draws a cube point cloud composed of 9*9*9 points in -1 to 1 on all axes
-void Rasteriser::projectionTest() {
-	int point_count = 0;
-	Vector3 cube_points[9 * 9 * 9];
-	for (float x = -1; x <= 1; x += 0.25) {
-		for (float y = -1; y <= 1; y += 0.25) {
-			for (float z = -1; z <= 1; z += 0.25) {
-				Vector3 new_point(x, y, z);
-				cube_points[point_count++] = new_point;
-			}
+			_display->drawPixel(j + x, i + y, colour);
 		}
 	}
 
 }
 
-	Rasteriser::~Rasteriser()	{
-	}
+
+Vector2 Rasteriser::project(const Vector3& vec) {
+	Vector2 proj_pt(vec.getX(), vec.getY());
+	proj_pt *= _fov_factor;
+	return proj_pt;
+}
+
+Rasteriser::~Rasteriser() {
+}
 
