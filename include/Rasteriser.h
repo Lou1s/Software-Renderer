@@ -17,5 +17,6 @@ public:
 private:
 	std::shared_ptr<Display> _display;
 	float _fov_factor;
+	Vector3 _camera_pos;
 };
 

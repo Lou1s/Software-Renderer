@@ -76,6 +76,10 @@ public:
 	T cross(const Vec2& vec) const {
 		return _xy[0] * vec._xy[1] - _xy[1] * vec._xy[0];
 	}
+	void rotate(const Vec2& rot) {
+		float yaw = rot.getX();
+		float pitch = rot.getY)();
+	}
 
 };
 
@@ -171,6 +175,11 @@ public:
 		);
 	}
 
+	void rotate(const Vec3& rot) {
+		float yaw = rot.getX();
+		float pitch = rot.getY)();
+		float roll = rot.getZ();
+	}
 
 };
 
