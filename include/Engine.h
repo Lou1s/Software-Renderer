@@ -13,6 +13,9 @@ private:
 	std::unique_ptr<Rasteriser> _rasteriser;
 	std::shared_ptr<Display> _display;
 	bool _is_running;
+	float _fov_factor;
+	Vector3 _camera_pos;
+	Vector2 project(const Vector3& vec);
 public:
 	Engine();
 	~Engine();

@@ -13,10 +13,9 @@ public:
 	void drawTriangle();
 	void drawGrid(Uint32 grid_colour);
 	void drawRectangle(int x, int y, int width, int height, Uint32 colour);
-	Vector2 project(const Vector3& vec);
+	
 private:
 	std::shared_ptr<Display> _display;
-	float _fov_factor;
-	Vector3 _camera_pos;
+	
 };
 

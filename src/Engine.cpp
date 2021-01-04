@@ -23,6 +23,8 @@ void Engine::init() {
 	SDL_GetCurrentDisplayMode(0, &display_mode);
 	_display = std::make_shared<Display>(display_mode.w, display_mode.h, "Software Renderer");
 	_rasteriser = std::make_unique<Rasteriser>(_display);
+	_fov_factor = 640;
+	_camera_pos = Vector3(0, 0, -5);
 	_is_running = true;
 }
 
@@ -47,6 +49,17 @@ void Engine::processInput() {
 	}
 }
 
+Vector2 Engine::project(const Vector3& vec) {
+	//using similar triangles here to get the projected x and y (perspective divide), basically the bigger the z the further away the point is, so the smaller it is on our screen.
+	float z = vec.getZ() - _camera_pos.getZ();
+	Vector2 proj_pt(vec.getX(), vec.getY());
+	proj_pt *= _fov_factor;
+	proj_pt /= z;
+
+	return proj_pt;
+}
+
+
 void Engine::update() {
 	_rasteriser->drawGrid(0xFF0000FF);
 	const int pts_num = 9;
@@ -55,7 +68,7 @@ void Engine::update() {
 	generatePointCube(9, -1, 1, cube_points);
 	int point_count = 0;
 	for (const Vector3& vec : cube_points) {
-		Vector2 projected_point = _rasteriser->project(vec);
+		Vector2 projected_point = project(vec);
 			_rasteriser->drawRectangle(
 			projected_point.getX() + _display->getWidth() /2,
 			projected_point.getY() + _display->getHeight() / 2,
