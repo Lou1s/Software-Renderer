@@ -25,6 +25,7 @@ void Engine::init() {
 	_rasteriser = std::make_unique<Rasteriser>(_display);
 	_fov_factor = 640;
 	_camera_pos = Vector3(0, 0, -5);
+	cube_rotation = Vector3(0.0, 0.0, 0.0);
 	_is_running = true;
 }
 
@@ -61,16 +62,21 @@ Vector2 Engine::project(const Vector3& vec) {
 
 
 void Engine::update() {
+	cube_rotation += Vector3(5.7, 5.7, 5.7);
+	std::cout << "cube rotate: " << "(" << cube_rotation.getX() << "," << cube_rotation.getY() << "," << cube_rotation.getZ() << ")" << std::endl;
 	_rasteriser->drawGrid(0xFF0000FF);
 	const int pts_num = 9;
 	std::vector<Vector3> cube_points;
 	cube_points.reserve(pts_num * pts_num * pts_num);
-	generatePointCube(9, -1, 1, cube_points);
-	int point_count = 0;
+	generatePointCube(cube_points);
+
 	for (const Vector3& vec : cube_points) {
-		Vector2 projected_point = project(vec);
-			_rasteriser->drawRectangle(
-			projected_point.getX() + _display->getWidth() /2,
+		Vector3 transformed_point(vec);
+		transformed_point.rotateY(cube_rotation.getY());
+
+		Vector2 projected_point = project(transformed_point);
+		_rasteriser->drawRectangle(
+			projected_point.getX() + _display->getWidth() / 2,
 			projected_point.getY() + _display->getHeight() / 2,
 			4,
 			4,

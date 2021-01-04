@@ -1,6 +1,10 @@
 #pragma once
 
+#define _USE_MATH_DEFINES
 #include <cmath>
+
+#define degreesToRadians(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+#define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / M_PI)
 
 template <class T>
 class Vec2 {
@@ -76,9 +80,13 @@ public:
 	T cross(const Vec2& vec) const {
 		return _xy[0] * vec._xy[1] - _xy[1] * vec._xy[0];
 	}
-	void rotate(const Vec2& rot) {
-		float yaw = rot.getX();
-		float pitch = rot.getY)();
+	void rotate(const double& angle) {
+		float rad_angle = degreesToRadians(angle);
+		float x = _xy[0];
+		float y = _xy[1];
+		_xy[0] = x * cos(rad_angle) - y * sin(rad_angle);
+		_xy[1] = x * sin(rad_angle) + y * cos(rad_angle);
+
 	}
 
 };
@@ -177,8 +185,39 @@ public:
 
 	void rotate(const Vec3& rot) {
 		float yaw = rot.getX();
-		float pitch = rot.getY)();
+		float pitch = rot.getY();
 		float roll = rot.getZ();
+		float x = _xyz[0];
+		float y = _xyz[1];
+		float z = _xyz[2];
+
+	}
+
+	void rotateZ(const float& angle) {
+		float rad_angle = degreesToRadians(angle);
+		float x = _xyz[0];
+		float y = _xyz[1];
+		_xyz[0] = x * cos(rad_angle) - y * sin(rad_angle);
+		_xyz[1] = x * sin(rad_angle) + y * cos(rad_angle);
+
+	}
+
+	void rotateY(const float& angle) {
+		float rad_angle = degreesToRadians(angle);
+		float x = _xyz[0];
+		float z = _xyz[2];
+		_xyz[0] = x * cos(rad_angle) - z * sin(rad_angle);
+		_xyz[2] = x * sin(rad_angle) + z * cos(rad_angle);
+
+	}
+
+	void rotateX(const float& angle) {
+		float rad_angle = degreesToRadians(angle);
+		float y = _xyz[0];
+		float z = _xyz[2];
+		_xyz[1] = y * cos(rad_angle) - z * sin(rad_angle);
+		_xyz[2] = y * sin(rad_angle) + z * cos(rad_angle);
+
 	}
 
 };
