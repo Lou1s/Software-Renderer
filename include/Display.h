@@ -17,6 +17,7 @@ public:
     void drawPixel(int x, int y, int r, int g, int b, int a);
     int getHeight();
     int getWidth();
+    void clearPixelBuffer(Uint32 colour);
 private:
     std::unique_ptr<Uint32> _pixel_buffer;
     long long _width;

@@ -28,7 +28,9 @@ Display::Display(long long width, long long height, std::string title) :
 
 
 	_pixel_buffer.reset(new Uint32[_width * _height]);
-	memset(_pixel_buffer.get(), 0x00000000, _width * _height * sizeof(Uint32));
+	//memset(_pixel_buffer.get(), 0xFF000000, _width * _height * sizeof(Uint32));
+	clearPixelBuffer(0xFF000000);
+
 
 }
 
@@ -42,6 +44,13 @@ void Display::drawPixel(int x, int y, Uint32 colour) {
 	_pixel_buffer.get()[y * _width + x] = colour;
 }
 
+void Display::clearPixelBuffer(uint32_t colour) {
+	for (int y = 0; y < _height; y++) {
+		for (int x = 0; x < _width; x++) {
+			_pixel_buffer.get()[(_width * y) + x] = colour;
+		}
+	}
+}
 void Display::drawPixel(int x, int y, int r, int g, int b, int a) {
 	Uint32 colour = (Uint8)a;
 	colour <<= 8;
@@ -58,8 +67,10 @@ void Display::update() {
 		_width * sizeof(Uint32));
 
 	SDL_RenderCopy(_SDL_renderer.get(), _frame_texture.get(), NULL, NULL);
+	//memset(_pixel_buffer.get(), 0xFF000000, _width * _height * sizeof(Uint32));
 	SDL_RenderPresent(_SDL_renderer.get());
-	memset(_pixel_buffer.get(), 0x00000000, _width * _height * sizeof(Uint32));
+	clearPixelBuffer(0xFF000000);
+	
 }
 
 int Display::getWidth() {
