@@ -213,7 +213,7 @@ public:
 
 	void rotateX(const float& angle) {
 		float rad_angle = degreesToRadians(angle);
-		float y = _xyz[0];
+		float y = _xyz[1];
 		float z = _xyz[2];
 		_xyz[1] = y * cos(rad_angle) - z * sin(rad_angle);
 		_xyz[2] = y * sin(rad_angle) + z * cos(rad_angle);

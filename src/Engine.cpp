@@ -72,7 +72,9 @@ void Engine::update() {
 
 	for (const Vector3& vec : cube_points) {
 		Vector3 transformed_point(vec);
+		transformed_point.rotateZ(cube_rotation.getZ());
 		transformed_point.rotateY(cube_rotation.getY());
+		transformed_point.rotateX(cube_rotation.getX());
 
 		Vector2 projected_point = project(transformed_point);
 		_rasteriser->drawRectangle(
