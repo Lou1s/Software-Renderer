@@ -184,13 +184,13 @@ public:
 	}
 
 	void rotate(const Vec3& rot) {
-		float yaw = rot.getX();
-		float pitch = rot.getY();
-		float roll = rot.getZ();
-		float x = _xyz[0];
-		float y = _xyz[1];
-		float z = _xyz[2];
+		float roll = degreesToRadians(rot.getX());
+		float pitch = degreesToRadians(rot.getY());
+		float yaw = degreesToRadians(rot.getZ());
 
+		rotateX(roll);
+		rotateY(pitch);
+		rotateZ(yaw);
 	}
 
 	void rotateZ(const float& angle) {
