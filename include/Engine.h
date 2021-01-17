@@ -14,8 +14,10 @@ private:
 	std::shared_ptr<Display> _display;
 	bool _is_running;
 	float _fov_factor;
+	int _previous_frame_time;
 	Vector3 cube_rotation;
 	Vector3 _camera_pos;
+	
 	Vector2 project(const Vector3& vec);
 
 public:

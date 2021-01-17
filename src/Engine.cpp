@@ -8,7 +8,10 @@
 Engine::Engine() :
 	_rasteriser(nullptr),
 	_display(nullptr),
-	_is_running(false)
+	_is_running(false),
+	_fov_factor(640),
+	_camera_pos(0, 0, -5),
+	_previous_frame_time(0)
 {
 
 }
@@ -23,10 +26,9 @@ void Engine::init() {
 	SDL_GetCurrentDisplayMode(0, &display_mode);
 	_display = std::make_shared<Display>(display_mode.w, display_mode.h, "Software Renderer");
 	_rasteriser = std::make_unique<Rasteriser>(_display);
-	_fov_factor = 640;
-	_camera_pos = Vector3(0, 0, -5);
 	cube_rotation = Vector3(0.0, 0.0, 0.0);
 	_is_running = true;
+	
 }
 
 bool Engine::isRunning() {
@@ -62,8 +64,12 @@ Vector2 Engine::project(const Vector3& vec) {
 
 
 void Engine::update() {
+	int time_to_wait = _display->FRAME_TARGET_TIME - (SDL_GetTicks() - _previous_frame_time);
+	if (time_to_wait > 0 && time_to_wait <= _display->FRAME_TARGET_TIME) {
+		SDL_Delay(time_to_wait);
+	}
+
 	cube_rotation += Vector3(5.7, 5.7, 5.7);
-	std::cout << "cube rotate: " << "(" << cube_rotation.getX() << "," << cube_rotation.getY() << "," << cube_rotation.getZ() << ")" << std::endl;
 	_rasteriser->drawGrid(0xFF0000FF);
 	const int pts_num = 9;
 	std::vector<Vector3> cube_points;

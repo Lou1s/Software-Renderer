@@ -44,7 +44,7 @@ void Display::drawPixel(int x, int y, Uint32 colour) {
 	_pixel_buffer.get()[y * _width + x] = colour;
 }
 
-void Display::clearPixelBuffer(uint32_t colour) {
+void Display::clearPixelBuffer(Uint32 colour) {
 	for (int y = 0; y < _height; y++) {
 		for (int x = 0; x < _width; x++) {
 			_pixel_buffer.get()[(_width * y) + x] = colour;

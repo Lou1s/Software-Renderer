@@ -18,6 +18,9 @@ public:
     int getHeight();
     int getWidth();
     void clearPixelBuffer(Uint32 colour);
+
+    const static int FPS = 60;
+    const static int FRAME_TARGET_TIME = 1000 / FPS;
 private:
     std::unique_ptr<Uint32> _pixel_buffer;
     long long _width;
