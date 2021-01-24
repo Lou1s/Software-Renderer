@@ -1,11 +1,13 @@
 #pragma once
 #include "../include/MathUtils.h"
+#include "../include/Mesh.h"
 #include <memory>
 #include <vector>
 #include <iostream>
 
 class Display;
 class Rasteriser;
+class Mesh;
 
 class Engine
 {
@@ -17,13 +19,17 @@ private:
 	int _previous_frame_time;
 	Vector3 cube_rotation;
 	Vector3 _camera_pos;
-	
+	Mesh _mesh;
+	std::vector<triangle_t> _rendering_triangles;
+
 	Vector2 project(const Vector3& vec);
+	
 
 public:
 	Engine();
 	~Engine();
 	void init();
+	void setup();
 	bool isRunning();
 	void processInput();
 	void update();

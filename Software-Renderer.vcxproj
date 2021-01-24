@@ -110,12 +110,14 @@
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Display.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Rasteriser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Display.h" />
     <ClInclude Include="include\MathUtils.h" />
+    <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\Rasteriser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
