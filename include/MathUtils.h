@@ -184,9 +184,9 @@ public:
 	}
 
 	void rotate(const Vec3& rot) {
-		float roll = degreesToRadians(rot.getX());
-		float pitch = degreesToRadians(rot.getY());
-		float yaw = degreesToRadians(rot.getZ());
+		float roll = rot.getX();
+		float pitch = rot.getY();
+		float yaw = rot.getZ();
 
 		rotateX(roll);
 		rotateY(pitch);
