@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "../include/MathUtils.h"
-
+#include <string>
 struct Face {
 	unsigned __int64 a;
 	unsigned __int64 b;
@@ -29,8 +29,11 @@ public:
 	std::vector<Vector3> normals;
 
 	Mesh();
+	Mesh(const std::string& path_to_mesh);
 	Mesh(const std::vector<Vector3> &verts, const std::vector<Face> &f);
-	
+
+	void loadFromFile(const std::string& path_to_file);
+
 	void rotate(const Vector3 &rot);
 	void translate(const Vector3 &trans);
 	void scale(const float &x, const float& y, const float& z);
