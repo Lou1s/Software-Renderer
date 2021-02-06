@@ -19,8 +19,8 @@ private:
 	int _previous_frame_time;
 	Vector3 cube_rotation;
 	Vector3 _camera_pos;
-	Mesh _mesh;
-	std::vector<triangle_t> _rendering_triangles;
+	std::unique_ptr<Mesh> _mesh;
+	std::vector<Triangle> _rendering_triangles;
 
 	Vector2 project(const Vector3& vec);
 	

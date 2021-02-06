@@ -12,7 +12,7 @@ Engine::Engine() :
 	_fov_factor(640),
 	_camera_pos(0, 0, -5),
 	_previous_frame_time(0),
-	_mesh()
+	_mesh(nullptr)
 {
 
 }
@@ -29,37 +29,38 @@ void Engine::init() {
 	_rasteriser = std::make_unique<Rasteriser>(_display);
 	cube_rotation = Vector3(0.0, 0.0, 0.0);
 	_is_running = true;
+	_mesh = std::make_unique<Mesh>();
 	
 }
 
 void Engine::setup() {
-	_mesh.vertices.push_back(Vector3(-1.0, -1.0, -1.0));
-	_mesh.vertices.push_back(Vector3(-1.0, 1.0, -1.0));
-	_mesh.vertices.push_back(Vector3(1.0, 1.0, -1.0));
-	_mesh.vertices.push_back(Vector3(1.0, -1.0, -1.0));
-	_mesh.vertices.push_back(Vector3(1.0, 1.0, 1.0));
-	_mesh.vertices.push_back(Vector3(1.0, -1.0, 1.0));
-	_mesh.vertices.push_back(Vector3(-1.0, 1.0, 1.0));
-	_mesh.vertices.push_back(Vector3(-1.0, -1.0, 1.0));
+	_mesh->vertices.push_back(Vector3(-1.0, -1.0, -1.0));
+	_mesh->vertices.push_back(Vector3(-1.0, 1.0, -1.0));
+	_mesh->vertices.push_back(Vector3(1.0, 1.0, -1.0));
+	_mesh->vertices.push_back(Vector3(1.0, -1.0, -1.0));
+	_mesh->vertices.push_back(Vector3(1.0, 1.0, 1.0));
+	_mesh->vertices.push_back(Vector3(1.0, -1.0, 1.0));
+	_mesh->vertices.push_back(Vector3(-1.0, 1.0, 1.0));
+	_mesh->vertices.push_back(Vector3(-1.0, -1.0, 1.0));
 
 	//front
-	_mesh.faces.push_back(face_t{1, 2, 3});
-	_mesh.faces.push_back(face_t{ 1, 3, 4 });
+	_mesh->faces.push_back(Face{1, 2, 3});
+	_mesh->faces.push_back(Face{ 1, 3, 4 });
 	//right
-	_mesh.faces.push_back(face_t{ 4, 3, 5 });
-	_mesh.faces.push_back(face_t{ 4, 5, 6 });
+	_mesh->faces.push_back(Face{ 4, 3, 5 });
+	_mesh->faces.push_back(Face{ 4, 5, 6 });
 	//back
-	_mesh.faces.push_back(face_t{ 6, 5, 7 });
-	_mesh.faces.push_back(face_t{ 6, 7, 8 });
+	_mesh->faces.push_back(Face{ 6, 5, 7 });
+	_mesh->faces.push_back(Face{ 6, 7, 8 });
 	//left
-	_mesh.faces.push_back(face_t{ 8, 7, 2 });
-	_mesh.faces.push_back(face_t{ 8, 2, 1 });
+	_mesh->faces.push_back(Face{ 8, 7, 2 });
+	_mesh->faces.push_back(Face{ 8, 2, 1 });
 	//top
-	_mesh.faces.push_back(face_t{ 2, 7, 5 });
-	_mesh.faces.push_back(face_t{ 2, 5, 3 });
+	_mesh->faces.push_back(Face{ 2, 7, 5 });
+	_mesh->faces.push_back(Face{ 2, 5, 3 });
 	//bottom
-	_mesh.faces.push_back(face_t{ 6, 8, 1 });
-	_mesh.faces.push_back(face_t{ 6, 1, 4 });
+	_mesh->faces.push_back(Face{ 6, 8, 1 });
+	_mesh->faces.push_back(Face{ 6, 1, 4 });
 }
 
 bool Engine::isRunning() {
@@ -99,33 +100,25 @@ void Engine::update() {
 		SDL_Delay(time_to_wait);
 	}
 	_rendering_triangles.clear();
-	cube_rotation += Vector3(0.6, 0.6, 0.6);
-	_rasteriser->drawGrid(0xFF0000FF);
+	cube_rotation += Vector3(3, 3, 3);
+	_rasteriser->drawGrid(0xFF2F4F4F);
 	
-	for (size_t i = 0; i < _mesh.faces.size(); i++) {
-		face_t mesh_face = _mesh.faces[i];
+	for (size_t i = 0; i < _mesh->faces.size(); i++) {
+		Face mesh_face = _mesh->faces[i];
 		Vector3 face_vertices[3];
 
-		face_vertices[0] = _mesh.vertices[mesh_face.a - 1];
-		face_vertices[1] = _mesh.vertices[mesh_face.b - 1];
-		face_vertices[2] = _mesh.vertices[mesh_face.c - 1];
+		face_vertices[0] = _mesh->vertices[mesh_face.a - 1];
+		face_vertices[1] = _mesh->vertices[mesh_face.b - 1];
+		face_vertices[2] = _mesh->vertices[mesh_face.c - 1];
 
-		triangle_t tri;
+		Triangle tri;
 		for (size_t j = 0; j < 3; j++) {
 			Vector3 transformed_vert = face_vertices[j];
 			transformed_vert.rotate(cube_rotation);
-			/*
-			transformed_vert.rotateZ(cube_rotation.getZ());
-			transformed_vert.rotateY(cube_rotation.getY());
-			transformed_vert.rotateX(cube_rotation.getX());
-			*/
-
 			//translate vertex away from the camera in z
 			transformed_vert.setZ(transformed_vert.getZ() - _camera_pos.getZ());
-
+			//project the point
 			Vector2 projected_point = project(transformed_vert);
-			
-
 			//scale and translate projected point ot the middle of the screen
 			projected_point.setX(projected_point.getX() + _display->getWidth() / 2);
 			projected_point.setY(projected_point.getY() + _display->getHeight() / 2);
@@ -134,37 +127,18 @@ void Engine::update() {
 		_rendering_triangles.push_back(tri);
 	}
 	
-	/*
-	const int pts_num = 9;
-	std::vector<Vector3> cube_points;
-	cube_points.reserve(pts_num * pts_num * pts_num);
-	generatePointCube(cube_points);
-	
-	for (const Vector3& vec : cube_points) {
-		Vector3 transformed_point(vec);
-		transformed_point.rotateZ(cube_rotation.getZ());
-		transformed_point.rotateY(cube_rotation.getY());
-		transformed_point.rotateX(cube_rotation.getX());
 
-		transformed_point.setZ(transformed_point.getZ() - _camera_pos.getZ());
-		Vector2 projected_point = project(transformed_point);
-		_rasteriser->drawRectangle(
-			projected_point.getX() + _display->getWidth() / 2,
-			projected_point.getY() + _display->getHeight() / 2,
-			4,
-			4,
-			0xFFFFFF00);
-	}
-	cube_points.clear();
-	*/
 }
 
 void Engine::render() {
 	for (size_t i = 0; i < _rendering_triangles.size(); i++) {
-		triangle_t &tri = _rendering_triangles[i];
+		Triangle &tri = _rendering_triangles[i];
+		
 		for (size_t j = 0; j < 3; j++) {
-			_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFFFFFF00);
+			_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
 		}
+		
+		_rasteriser->drawTriangle(tri, 0xFF00FFFF);
 		
 	}
 	_display->update();

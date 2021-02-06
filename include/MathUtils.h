@@ -1,10 +1,9 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
-#include <cmath>
+#define PI 3.14159265358979323846264338327950288
 
-#define degreesToRadians(angleDegrees) ((angleDegrees) * M_PI / 180.0)
-#define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / M_PI)
+#define degreesToRadians(angleDegrees) ((angleDegrees) * PI / 180.0)
+#define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / PI)
 
 template <class T>
 class Vec2 {
@@ -38,6 +37,12 @@ public:
 			_xy[0] * n,
 			_xy[1] * n
 			);
+	}
+		Vec2 operator/ (T n) const {
+		return Vec2(
+			_xy[0] / n,
+			_xy[1] / n
+		);
 	}
 
 	void operator/= (T n) {
@@ -111,6 +116,8 @@ public:
 	void setY(const T y) { _xyz[1] = y; }
 	void setZ(const T z) { _xyz[2] = z; }
 
+	void set(const float& x, const float& y, const float& z) { setX(x); setY(y); setZ(z); }
+
 	Vec3 operator+ (const Vec3& vec) const {
 		return Vec3(
 			_xyz[0] + vec._xyz[0],
@@ -130,6 +137,14 @@ public:
 			_xyz[0] * n,
 			_xyz[1] * n,
 			_xyz[2] * n
+		);
+	}
+
+	Vec3 operator/ (T n) const {
+		return Vec3(
+			_xyz[0] / n,
+			_xyz[1] / n,
+			_xyz[2] / n
 		);
 	}
 
