@@ -193,8 +193,8 @@ public:
 	Vec3 cross(const Vec3& vec) const {
 		return Vec3(
 			_xyz[1] * vec._xyz[2] - _xyz[2] * vec._xyz[1],
-			_xyz[3] * vec._xyz[1] - _xyz[1] * vec._xyz[3],
-			_xyz[1] * vec._xyz[2] - _xyz[2] * vec._xyz[1]
+			_xyz[2] * vec._xyz[0] - _xyz[0] * vec._xyz[2],
+			_xyz[0] * vec._xyz[1] - _xyz[1] * vec._xyz[0]
 		);
 	}
 
