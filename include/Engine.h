@@ -17,19 +17,20 @@ private:
 	bool _is_running;
 	float _fov_factor;
 	int _previous_frame_time;
-	Vector3 cube_rotation;
+	Vector3 mesh_rotation;
 	Vector3 _camera_pos;
 	std::unique_ptr<Mesh> _mesh;
 	std::vector<Triangle> _rendering_triangles;
 
 	Vector2 project(const Vector3& vec);
-	
+	bool _backface_cull;
 
 public:
 	Engine();
 	~Engine();
 	void init();
 	void setup();
+	void setFlags(bool backface);
 	bool isRunning();
 	void processInput();
 	void update();

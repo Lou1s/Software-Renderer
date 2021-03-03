@@ -12,7 +12,8 @@ Engine::Engine() :
 	_fov_factor(640),
 	_camera_pos(0, 0, -5),
 	_previous_frame_time(0),
-	_mesh(nullptr)
+	_mesh(nullptr),
+	_backface_cull(true)
 {
 
 }
@@ -27,14 +28,18 @@ void Engine::init() {
 	SDL_GetCurrentDisplayMode(0, &display_mode);
 	_display = std::make_shared<Display>(display_mode.w, display_mode.h, "Software Renderer");
 	_rasteriser = std::make_unique<Rasteriser>(_display);
-	cube_rotation = Vector3(2, 1, 6);
+	mesh_rotation = Vector3(0, 0, 0);
 	_is_running = true;
 	_mesh = std::make_unique<Mesh>();
 
 }
 
 void Engine::setup() {
-	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\f22.obj");
+	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\cube.obj");
+}
+
+void Engine::setFlags(bool backface) {
+	_backface_cull = backface;
 }
 
 bool Engine::isRunning() {
@@ -77,24 +82,44 @@ void Engine::update() {
 	_rasteriser->drawGrid(0xFF2F4F4F);
 
 	//animate
-	_mesh->rotate(Vector3(7, 5, 6));
-	
+	//_mesh->rotate(Vector3(7, 5, 6));
+	mesh_rotation += Vector3(6,0,0);
 
 	for (size_t i = 0; i < _mesh->faces.size(); i++) {
 		Face mesh_face = _mesh->faces[i];
+		
 		Vector3 face_vertices[3]{
 			_mesh->vertices[mesh_face.a - 1],
 			_mesh->vertices[mesh_face.b - 1],
 			_mesh->vertices[mesh_face.c - 1]
 		};
 
+		
+		Vector3 transformed_vertices[3];
+		for (size_t j = 0; j < 3; j++) {
+			Vector3 transformed_vert = face_vertices[j].rotate(mesh_rotation);
+			//translate vertex away from the camera in z
+			transformed_vert.setZ(transformed_vert.getZ() + 5);
+			transformed_vertices[j] = transformed_vert;
+			
+		}
+		bool skip_face = false;
+
+		Vector3 ab = transformed_vertices[1] - transformed_vertices[0];
+		Vector3 ac = transformed_vertices[2] - transformed_vertices[0];
+		Vector3 normal =  ab.cross(ac);
+		normal.normalise();
+		if (_backface_cull) {
+			Vector3 camera_ray = _camera_pos - transformed_vertices[0];
+			skip_face = camera_ray.dot(normal) < 0;
+		}
+		if (skip_face) {
+			continue;
+		}
 		Triangle tri;
 		for (size_t j = 0; j < 3; j++) {
-			Vector3 transformed_vert = face_vertices[j];
-			//translate vertex away from the camera in z
-			transformed_vert.setZ(transformed_vert.getZ() - _camera_pos.getZ());
 			//project the point
-			Vector2 projected_point = project(transformed_vert);
+			Vector2 projected_point = project(transformed_vertices[j]);
 			//scale and translate projected point ot the middle of the screen
 			projected_point.setX(projected_point.getX() + _display->getWidth() / 2);
 			projected_point.setY(projected_point.getY() + _display->getHeight() / 2);

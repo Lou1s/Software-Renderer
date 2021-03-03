@@ -106,7 +106,7 @@ private:
 public:
 	Vec3() : _xyz{ 0.0, 0.0, 0.0 } {}
 	Vec3(T x, T y, T z) : _xyz{ x, y, z } {}
-	Vec3(const Vec3& vec) : _xyz{ vec._xyz[0], vec._xyz[1], vec._xyz[2] } {}
+	Vec3(const Vec3<T>& vec) : _xyz{ vec.getX(), vec.getY(), vec.getZ() } {}
 
 	T getX() const { return _xyz[0]; }
 	T getY() const { return _xyz[1]; }
@@ -129,7 +129,7 @@ public:
 		return Vec3(
 			_xyz[0] - vec._xyz[0],
 			_xyz[1] - vec._xyz[1],
-			_xyz[2] - vec._xyz[2],
+			_xyz[2] - vec._xyz[2]
 			);
 	}
 	Vec3 operator* (T n) const {
@@ -175,14 +175,14 @@ public:
 	Vec3& normalise() {
 		T ln = length();
 		if (ln > 0)
-			*this /= len
+			*this /= ln;
 			return *this;
 	}
 	T length() const {
 		return(std::sqrt(_xyz[0] * _xyz[0] + _xyz[1] * _xyz[1] + _xyz[2] * _xyz[2]));
 	}
 	T dot(const Vec3& vec) const {
-		return _xyz[0] * vec._xyz[0] + _xyz[1] * vec._xyz[1] + _xyz[2] * vec._xyz[2];
+		return (_xyz[0] * vec._xyz[0]) + (_xyz[1] * vec._xyz[1]) + (_xyz[2] * vec._xyz[2]);
 	}
 	T distance(const Vec3& vec) const {
 		dist_x = _xyz[0] - vec._xyz[0];
@@ -198,17 +198,23 @@ public:
 		);
 	}
 
-	void rotate(const Vec3& rot) {
+	void rotateInPlace(const Vec3& rot) {
 		float roll = rot.getX();
 		float pitch = rot.getY();
 		float yaw = rot.getZ();
 
-		rotateX(roll);
-		rotateY(pitch);
-		rotateZ(yaw);
+		rotateXInPlace(roll);
+		rotateYInPlace(pitch);
+		rotateZInPlace(yaw);
 	}
 
-	void rotateZ(const float& angle) {
+	Vec3 rotate(const Vec3& rot) {
+		Vec3<T> result(*this);
+		result.rotateInPlace(rot);
+		return result;
+	}
+
+	void rotateZInPlace(const float& angle) {
 		float rad_angle = degreesToRadians(angle);
 		float x = _xyz[0];
 		float y = _xyz[1];
@@ -216,8 +222,13 @@ public:
 		_xyz[1] = x * sin(rad_angle) + y * cos(rad_angle);
 
 	}
+	Vec3 rotateZ(const Vec3& rot) {
+		Vec3 result(*this);
+		result.rotateZInPlace(rot);
+		return result;
+	}
 
-	void rotateY(const float& angle) {
+	void rotateYInPlace(const float& angle) {
 		float rad_angle = degreesToRadians(angle);
 		float x = _xyz[0];
 		float z = _xyz[2];
@@ -225,14 +236,24 @@ public:
 		_xyz[2] = x * sin(rad_angle) + z * cos(rad_angle);
 
 	}
+	Vec3 rotateY(const Vec3& rot) {
+		Vec3 result(*this);
+		result.rotateYInPlace(rot);
+		return result;
+	}
 
-	void rotateX(const float& angle) {
+	void rotateXInPlace(const float& angle) {
 		float rad_angle = degreesToRadians(angle);
 		float y = _xyz[1];
 		float z = _xyz[2];
 		_xyz[1] = y * cos(rad_angle) - z * sin(rad_angle);
 		_xyz[2] = y * sin(rad_angle) + z * cos(rad_angle);
 
+	}
+	Vec3 rotateX(const Vec3& rot) {
+		Vec3 result(this);
+		result.rotateXInPlace(rot);
+		return result;
 	}
 
 };

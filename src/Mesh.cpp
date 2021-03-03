@@ -67,11 +67,17 @@ void Mesh::loadFromFile(const std::string& path_to_file) {
 	}
 }
 
+Vector3 Mesh::getFaceNormal(const int& face_index) {
+	Vector3 ab = vertices[faces[face_index].b - 1] - vertices[faces[face_index].a - 1];
+	Vector3 ac = vertices[faces[face_index].c - 1] - vertices[faces[face_index].a - 1];
+	return ab.cross(ac);
+}
+
 void Mesh::rotate(const Vector3& rot)
 {
 	for (Vector3& vec : vertices)
 	{
-		vec.rotate(rot);
+		vec.rotateInPlace(rot);
 	}
 
 	_rotation += rot;

@@ -38,6 +38,8 @@ public:
 	void translate(const Vector3 &trans);
 	void scale(const float &x, const float& y, const float& z);
 
+	Vector3 getFaceNormal(const int& face_index);
+
 	Vector3 getRotation();
 	Vector3 getScale();
 	Vector3 getTranslation();
