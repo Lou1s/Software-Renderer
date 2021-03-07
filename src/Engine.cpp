@@ -78,13 +78,15 @@ void Engine::update() {
 	if (time_to_wait > 0 && time_to_wait <= _display->FRAME_TARGET_TIME) {
 		SDL_Delay(time_to_wait);
 	}
+	_previous_frame_time = SDL_GetTicks();
 	_rendering_triangles.clear();
-	_rasteriser->drawGrid(0xFF2F4F4F);
+	
 
 	//animate
 	//_mesh->rotate(Vector3(7, 5, 6));
-	mesh_rotation += Vector3(6,0,0);
-
+	mesh_rotation += Vector3(6,2,4);
+	//IMPLEMENT 3D TRIANGLE STRUCT/CLASS FOR HOLDING DATA HERE AND COMPUTING NORMAL ETC.
+	//something wrong with culling..possibly the order of rednering or something?? it's just slight...might just be frame rate thing? won't notice when rasterised?
 	for (size_t i = 0; i < _mesh->faces.size(); i++) {
 		Face mesh_face = _mesh->faces[i];
 		
@@ -105,13 +107,13 @@ void Engine::update() {
 		}
 		bool skip_face = false;
 
-		Vector3 ab = transformed_vertices[1] - transformed_vertices[0];
-		Vector3 ac = transformed_vertices[2] - transformed_vertices[0];
+		Vector3 ab = (transformed_vertices[1] - transformed_vertices[0]).normalise();
+		Vector3 ac = (transformed_vertices[2] - transformed_vertices[0]).normalise();
 		Vector3 normal =  ab.cross(ac);
 		normal.normalise();
 		if (_backface_cull) {
-			Vector3 camera_ray = _camera_pos - transformed_vertices[0];
-			skip_face = camera_ray.dot(normal) < 0;
+			Vector3 camera_ray = (_camera_pos - transformed_vertices[0]).normalise();
+			skip_face = camera_ray.dot(normal) < 0.1;
 		}
 		if (skip_face) {
 			continue;
@@ -132,17 +134,18 @@ void Engine::update() {
 }
 
 void Engine::render() {
+	_rasteriser->drawGrid(0xFF2F4F4F);
 	for (size_t i = 0; i < _rendering_triangles.size(); i++) {
-		Triangle& tri = _rendering_triangles[i];
+		//for (size_t j = 0; j < 3; j++) {
+			//_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
+		//}
 
-		for (size_t j = 0; j < 3; j++) {
-			_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
-		}
-
-		_rasteriser->drawTriangle(tri, 0xFF00FFFF);
+		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFF00FFFF);
 
 	}
+	_rendering_triangles.clear();
 	_display->update();
+	//_display->clearPixelBuffer(0xFF000000);
 }
 
 void Engine::shutdown() {

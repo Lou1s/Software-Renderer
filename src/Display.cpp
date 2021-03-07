@@ -64,12 +64,13 @@ void Display::drawPixel(int x, int y, int r, int g, int b, int a) {
 
 void Display::update() {
 	SDL_UpdateTexture(_frame_texture.get(), NULL, _pixel_buffer.get(),
-		_width * sizeof(Uint32));
+		(int)(_width * sizeof(Uint32)));
 
 	SDL_RenderCopy(_SDL_renderer.get(), _frame_texture.get(), NULL, NULL);
 	//memset(_pixel_buffer.get(), 0xFF000000, _width * _height * sizeof(Uint32));
-	SDL_RenderPresent(_SDL_renderer.get());
 	clearPixelBuffer(0xFF000000);
+	SDL_RenderPresent(_SDL_renderer.get());
+	
 	
 }
 
