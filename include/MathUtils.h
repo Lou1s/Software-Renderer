@@ -222,7 +222,7 @@ public:
 		_xyz[1] = x * sin(rad_angle) + y * cos(rad_angle);
 
 	}
-	Vec3 rotateZ(const Vec3& rot) {
+	Vec3 rotateZ(const float& rot) {
 		Vec3 result(*this);
 		result.rotateZInPlace(rot);
 		return result;
@@ -236,7 +236,7 @@ public:
 		_xyz[2] = x * sin(rad_angle) + z * cos(rad_angle);
 
 	}
-	Vec3 rotateY(const Vec3& rot) {
+	Vec3 rotateY(const float& rot) {
 		Vec3 result(*this);
 		result.rotateYInPlace(rot);
 		return result;
@@ -250,8 +250,8 @@ public:
 		_xyz[2] = y * sin(rad_angle) + z * cos(rad_angle);
 
 	}
-	Vec3 rotateX(const Vec3& rot) {
-		Vec3 result(this);
+	Vec3 rotateX(const float &rot) {
+		Vec3 result(*this);
 		result.rotateXInPlace(rot);
 		return result;
 	}
