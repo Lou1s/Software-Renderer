@@ -23,6 +23,7 @@ private:
 	std::vector<Triangle> _rendering_triangles;
 
 	Vector2 project(const Vector3& vec);
+	Triangle Engine::project(const Triangle3D& tri);
 	bool _backface_cull;
 
 public:

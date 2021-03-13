@@ -72,6 +72,12 @@ Vector2 Engine::project(const Vector3& vec) {
 	return proj_pt;
 }
 
+Triangle Engine::project(const Triangle3D& tri) {
+	Triangle3D temp_tri(tri);
+	Triangle projected_tri(project(temp_tri.a()), project(temp_tri.b()), project(temp_tri.c()));
+	return projected_tri;
+}
+
 
 void Engine::update() {
 	int time_to_wait = _display->FRAME_TARGET_TIME - (SDL_GetTicks() - _previous_frame_time);
@@ -81,52 +87,30 @@ void Engine::update() {
 	_previous_frame_time = SDL_GetTicks();
 	_rendering_triangles.clear();
 	
-
-	//animate
-	//_mesh->rotate(Vector3(7, 5, 6));
 	mesh_rotation += Vector3(6,2,4);
-	//IMPLEMENT 3D TRIANGLE STRUCT/CLASS FOR HOLDING DATA HERE AND COMPUTING NORMAL ETC.
-	//something wrong with culling..possibly the order of rednering or something?? it's just slight...might just be frame rate thing? won't notice when rasterised?
+
 	for (size_t i = 0; i < _mesh->faces.size(); i++) {
 		Face mesh_face = _mesh->faces[i];
-		
-		Vector3 face_vertices[3]{
-			_mesh->vertices[mesh_face.a - 1],
-			_mesh->vertices[mesh_face.b - 1],
-			_mesh->vertices[mesh_face.c - 1]
-		};
+		Triangle3D tri_3D(_mesh->vertices[mesh_face.a - 1], _mesh->vertices[mesh_face.b - 1], _mesh->vertices[mesh_face.c - 1]);
 
-		
-		Vector3 transformed_vertices[3];
-		for (size_t j = 0; j < 3; j++) {
-			Vector3 transformed_vert = face_vertices[j].rotate(mesh_rotation);
-			//translate vertex away from the camera in z
-			transformed_vert.setZ(transformed_vert.getZ() + 5);
-			transformed_vertices[j] = transformed_vert;
-			
-		}
-		bool skip_face = false;
+		//apply rotation
+		tri_3D.rotateInPlace(mesh_rotation);
+		//translate away from the camera in z
+		tri_3D.translate(Vector3(0, 0, 5));
 
-		Vector3 ab = (transformed_vertices[1] - transformed_vertices[0]).normalise();
-		Vector3 ac = (transformed_vertices[2] - transformed_vertices[0]).normalise();
-		Vector3 normal =  ab.cross(ac);
-		normal.normalise();
+		//backface culling
 		if (_backface_cull) {
-			Vector3 camera_ray = (_camera_pos - transformed_vertices[0]).normalise();
-			skip_face = camera_ray.dot(normal) < 0.1;
+			Vector3 camera_ray = (_camera_pos - tri_3D.a()).normalise();
+			if (camera_ray.dot(tri_3D.normal()) < 0.1) {
+				continue;
+			}
 		}
-		if (skip_face) {
-			continue;
-		}
-		Triangle tri;
-		for (size_t j = 0; j < 3; j++) {
-			//project the point
-			Vector2 projected_point = project(transformed_vertices[j]);
-			//scale and translate projected point ot the middle of the screen
-			projected_point.setX(projected_point.getX() + _display->getWidth() / 2);
-			projected_point.setY(projected_point.getY() + _display->getHeight() / 2);
-			tri.points[j] = projected_point;
-		}
+
+		//project
+		Triangle tri = project(tri_3D);
+		//send to the middle f the screen
+		tri.translate(Vector2(_display->getWidth() / 2, _display->getHeight() / 2));
+
 		_rendering_triangles.push_back(tri);
 	}
 

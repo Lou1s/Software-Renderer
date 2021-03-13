@@ -16,6 +16,43 @@ struct Triangle {
 
 	Triangle() {};
 	Triangle(const Vector2& p1, const Vector2& p2, const Vector2& p3) : points{ p1, p2, p3 } {};
+	void translate(const Vector2& trans) {
+		points[0] += trans;
+		points[1] += trans;
+		points[2] += trans;
+	}
+};
+
+class Triangle3D {
+private:
+	Vector3 points[3];
+public:
+	Triangle3D() {};
+	Triangle3D(const Vector3& p1, const Vector3& p2, const Vector3& p3) : points{ p1, p2, p3 } {};
+	
+	Vector3 normal() {
+		Vector3 ab = (points[1] - points[0]).normalise();
+		Vector3 ac = (points[2] - points[0]).normalise();
+		Vector3 normal = ab.cross(ac);
+		normal.normalise();
+		return normal;
+	}
+
+	Vector3 a() { return points[0]; }
+	Vector3 b() { return points[1]; }
+	Vector3 c() { return points[2]; }
+
+	void rotateInPlace(const Vector3& rot) {
+		points[0].rotateInPlace(rot);
+		points[1].rotateInPlace(rot);
+		points[2].rotateInPlace(rot);
+	}
+	
+	void translate(const Vector3& trans) {
+		points[0] += trans;
+		points[1] += trans;
+		points[2] += trans;
+	}
 };
 
 class Mesh
