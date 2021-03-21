@@ -125,9 +125,9 @@ void Engine::render() {
 			//_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
 		//}
 		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
-		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFF0088FF);
+		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFFA9A9A9);
 		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::WIREFRAME);
-		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFF0000FF);
+		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFFD3D3D3);
 	}
 	_rendering_triangles.clear();
 	_display->update();

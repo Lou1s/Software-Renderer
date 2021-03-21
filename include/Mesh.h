@@ -21,6 +21,11 @@ struct Triangle {
 		points[1] += trans;
 		points[2] += trans;
 	}
+	void integise() {
+		points[0].integise();
+		points[1].integise();
+		points[2].integise();
+	}
 };
 
 class Triangle3D {

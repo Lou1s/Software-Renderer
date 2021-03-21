@@ -40,6 +40,7 @@ void Rasteriser::setTriangleDrawingMethod(const TriangleDrawingMethod& tri_draw)
 
 void Rasteriser::drawDDALine(const Vector2& vec1, const Vector2& vec2, Uint32 colour)
 {
+	//Vector2 delta(int(vec1.getX()) - int(vec2.getX()), int(vec1.getY()) - int(vec2.getY()));
 	Vector2 delta = vec1 - vec2;
 	int side_length = std::abs(delta.getX()) >= abs(delta.getY()) ? std::abs(delta.getX()) : std::abs(delta.getY());
 	Vector2 increment = delta / (float)side_length;
@@ -53,9 +54,15 @@ void Rasteriser::drawDDALine(const Vector2& vec1, const Vector2& vec2, Uint32 co
 
 void Rasteriser::drawLine(const Vector2& vec1, const Vector2& vec2, Uint32 colour)
 {
+	Vector2 vec1_int(vec1);
+	Vector2 vec2_int(vec2);
+
+	vec1_int.integise();
+	vec2_int.integise();
+
 	switch (_line_draw_method) {
 		case LineDrawingMethod::DDA:
-			drawDDALine(vec1, vec2, colour);
+			drawDDALine(vec1_int, vec2_int, colour);
 			break;
 		case LineDrawingMethod::BRESENHAM:
 			break;
@@ -92,9 +99,11 @@ void Rasteriser::drawTriangleFBFT(const Triangle& tri, Uint32 colour) {
 
 void Rasteriser::fillTriangleFlatBot(const Triangle& tri, Uint32 colour) {
 	//compute inverse clope -- change in x with respect to y, as we are using scanline, moving incrementally in y.
-	float slope1 = (float)(int(tri.points[1].getX()) - int(tri.points[0].getX())) / (int(tri.points[1].getY()) - int(tri.points[0].getY()));
-	float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
+	//float slope1 = (float)(int(tri.points[1].getX()) - int(tri.points[0].getX())) / (int(tri.points[1].getY()) - int(tri.points[0].getY()));
+	//float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
 
+	float slope1 = (float)(tri.points[1].getX() - tri.points[0].getX()) / (tri.points[1].getY() - tri.points[0].getY());
+	float slope2 = (float)(tri.points[2].getX() - tri.points[0].getX()) / (tri.points[2].getY() - tri.points[0].getY());
 	float x_start, x_end;
 	x_start = x_end = int(tri.points[0].getX());
 
@@ -108,8 +117,11 @@ void Rasteriser::fillTriangleFlatBot(const Triangle& tri, Uint32 colour) {
 }
 
 void Rasteriser::fillTriangleFlatTop(const Triangle& tri, Uint32 colour) {
-	float slope1 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
-	float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[1].getX())) / (int(tri.points[2].getY()) - int(tri.points[1].getY()));
+	//float slope1 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
+	//float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[1].getX())) / (int(tri.points[2].getY()) - int(tri.points[1].getY()));
+
+	float slope1 = (float)(tri.points[2].getX() - tri.points[0].getX()) / (tri.points[2].getY() - tri.points[0].getY());
+	float slope2 = (float)(tri.points[2].getX() - tri.points[1].getX()) / (tri.points[2].getY() - tri.points[1].getY());
 
 	float x_start, x_end;
 	x_start = x_end = int(tri.points[2].getX());
@@ -125,13 +137,16 @@ void Rasteriser::fillTriangleFlatTop(const Triangle& tri, Uint32 colour) {
 
 
 void Rasteriser::drawTriangle(const Triangle &tri, Uint32 colour)
-{
+{	
+	Triangle tri_int(tri);
+	tri_int.integise();
+
 	switch (_triangle_draw_method) {
 		case TriangleDrawingMethod::WIREFRAME:
-			drawTriangleWireframe(tri, colour);
+			drawTriangleWireframe(tri_int, colour);
 			break;
 		case TriangleDrawingMethod::FBFT:
-			drawTriangleFBFT(tri, colour);
+			drawTriangleFBFT(tri_int, colour);
 			break;
 	}
 	

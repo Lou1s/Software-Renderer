@@ -94,6 +94,11 @@ public:
 
 	}
 
+	void integise() {
+		_xy[0] = int(_xy[0]);
+		_xy[1] = int(_xy[1]);
+	}
+
 };
 
 typedef Vec2<float> Vector2;
