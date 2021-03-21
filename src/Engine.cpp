@@ -36,6 +36,7 @@ void Engine::init() {
 
 void Engine::setup() {
 	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\cube.obj");
+	_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
 }
 
 void Engine::setFlags(bool backface) {
@@ -101,7 +102,7 @@ void Engine::update() {
 		//backface culling
 		if (_backface_cull) {
 			Vector3 camera_ray = (_camera_pos - tri_3D.a()).normalise();
-			if (camera_ray.dot(tri_3D.normal()) < 0.1) {
+			if (camera_ray.dot(tri_3D.normal()) < 0.0) {
 				continue;
 			}
 		}
@@ -123,9 +124,10 @@ void Engine::render() {
 		//for (size_t j = 0; j < 3; j++) {
 			//_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
 		//}
-
-		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFF00FFFF);
-
+		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
+		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFF0088FF);
+		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::WIREFRAME);
+		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFF0000FF);
 	}
 	_rendering_triangles.clear();
 	_display->update();

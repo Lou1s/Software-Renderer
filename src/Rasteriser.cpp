@@ -1,10 +1,12 @@
 #include "../include/Rasteriser.h"
 #include "../include/Display.h"
+#include <algorithm>
 
 
-Rasteriser::Rasteriser(std::shared_ptr<Display> disp, const LineDrawingMethod& line_draw) :
+Rasteriser::Rasteriser(std::shared_ptr<Display> disp, const LineDrawingMethod& line_draw, const TriangleDrawingMethod& tri_draw) :
 	_display(disp),
-	_line_draw_method{line_draw}
+	_line_draw_method{line_draw},
+	_triangle_draw_method{tri_draw}
 {
 
 }
@@ -28,6 +30,12 @@ void Rasteriser::drawRectangle(int x, int y, int width, int height, Uint32 colou
 
 void Rasteriser::setLineDrawingMethod(const LineDrawingMethod& line_draw)
 {
+	_line_draw_method = line_draw;
+}
+
+void Rasteriser::setTriangleDrawingMethod(const TriangleDrawingMethod& tri_draw)
+{
+	_triangle_draw_method = tri_draw;
 }
 
 void Rasteriser::drawDDALine(const Vector2& vec1, const Vector2& vec2, Uint32 colour)
@@ -43,7 +51,7 @@ void Rasteriser::drawDDALine(const Vector2& vec1, const Vector2& vec2, Uint32 co
 	}
 }
 
-void Rasteriser::drawLine(Vector2 vec1, Vector2 vec2, Uint32 colour)
+void Rasteriser::drawLine(const Vector2& vec1, const Vector2& vec2, Uint32 colour)
 {
 	switch (_line_draw_method) {
 		case LineDrawingMethod::DDA:
@@ -57,11 +65,76 @@ void Rasteriser::drawLine(Vector2 vec1, Vector2 vec2, Uint32 colour)
 	}
 }
 
-void Rasteriser::drawTriangle(const Triangle &tri, Uint32 colour)
-{
+void Rasteriser::drawTriangleWireframe(const Triangle& tri, Uint32 colour) {
 	drawLine(tri.points[0], tri.points[1], colour);
 	drawLine(tri.points[1], tri.points[2], colour);
 	drawLine(tri.points[2], tri.points[0], colour);
+}
+
+Vector2 getFBFTTriMidPoint(const Vector2& p0, const Vector2& p1, const Vector2& p2) {
+	float mid_y = p1.getY();
+	float mid_x = (((p1.getY() - p0.getY()) * (p2.getX() - p0.getX())) / (p2.getY() - p0.getY())) + p0.getX();
+	return Vector2(mid_x, mid_y);
+}
+
+void Rasteriser::drawTriangleFBFT(const Triangle& tri, Uint32 colour) {
+	//sort in order of vertices
+	std::vector<Vector2> verts{ tri.points[0], tri.points[1], tri.points[2] };
+	//cheeky little lambda function to sort the verts easily
+	std::sort(verts.begin(), verts.end(), [](Vector2& vec1, Vector2& vec2) {return vec1.getY() < vec2.getY(); });
+	
+	Vector2 mid_point = getFBFTTriMidPoint(verts[0], verts[1], verts[2]);
+	Triangle flat_bot(verts[0],  verts[1], mid_point);
+	Triangle flat_top(verts[1], mid_point, verts[2]);
+	fillTriangleFlatBot(flat_bot, colour);
+	fillTriangleFlatTop(flat_top, colour);
+}
+
+void Rasteriser::fillTriangleFlatBot(const Triangle& tri, Uint32 colour) {
+	//compute inverse clope -- change in x with respect to y, as we are using scanline, moving incrementally in y.
+	float slope1 = (float)(int(tri.points[1].getX()) - int(tri.points[0].getX())) / (int(tri.points[1].getY()) - int(tri.points[0].getY()));
+	float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
+
+	float x_start, x_end;
+	x_start = x_end = int(tri.points[0].getX());
+
+	int y0 = int(tri.points[0].getY());
+	int y2 = int(tri.points[2].getY());
+	for (int y = y0; y <= y2; ++y) {
+		drawLine(Vector2(x_start, y), Vector2(x_end, y), colour);
+		x_start += slope1;
+		x_end += slope2;
+		}
+}
+
+void Rasteriser::fillTriangleFlatTop(const Triangle& tri, Uint32 colour) {
+	float slope1 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
+	float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[1].getX())) / (int(tri.points[2].getY()) - int(tri.points[1].getY()));
+
+	float x_start, x_end;
+	x_start = x_end = int(tri.points[2].getX());
+
+	int y2 = int(tri.points[2].getY());
+	int y1 = int(tri.points[1].getY());
+	for (int y = y2; y >= y1; --y) {
+		drawLine(Vector2(x_start, y), Vector2(x_end, y), colour);
+		x_start -= slope1;
+		x_end -= slope2;
+	}
+}
+
+
+void Rasteriser::drawTriangle(const Triangle &tri, Uint32 colour)
+{
+	switch (_triangle_draw_method) {
+		case TriangleDrawingMethod::WIREFRAME:
+			drawTriangleWireframe(tri, colour);
+			break;
+		case TriangleDrawingMethod::FBFT:
+			drawTriangleFBFT(tri, colour);
+			break;
+	}
+	
 }
 
 Rasteriser::~Rasteriser() {

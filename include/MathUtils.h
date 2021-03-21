@@ -98,6 +98,7 @@ public:
 
 typedef Vec2<float> Vector2;
 typedef Vec2<double> Vector2_d;
+typedef Vec2<int> Vector2_I;
 
 template <class T>
 class Vec3 {
