@@ -90,20 +90,31 @@ void Rasteriser::drawTriangleFBFT(const Triangle& tri, Uint32 colour) {
 	//cheeky little lambda function to sort the verts easily
 	std::sort(verts.begin(), verts.end(), [](Vector2& vec1, Vector2& vec2) {return vec1.getY() < vec2.getY(); });
 	
-	Vector2 mid_point = getFBFTTriMidPoint(verts[0], verts[1], verts[2]);
-	Triangle flat_bot(verts[0],  verts[1], mid_point);
-	Triangle flat_top(verts[1], mid_point, verts[2]);
-	fillTriangleFlatBot(flat_bot, colour);
-	fillTriangleFlatTop(flat_top, colour);
+	if (verts[1].getY() == verts[2].getY()) {
+		fillTriangleFlatBot(Triangle(verts[0], verts[1], verts[2]), colour);
+	}
+
+	else if (verts[0].getY() == verts[1].getY()) {
+		fillTriangleFlatTop(Triangle(verts[0], verts[1], verts[2]), colour);
+	}
+	else {
+
+		Vector2 mid_point = getFBFTTriMidPoint(verts[0], verts[1], verts[2]);
+		Triangle flat_bot(verts[0], verts[1], mid_point);
+		Triangle flat_top(verts[1], mid_point, verts[2]);
+
+
+		fillTriangleFlatBot(flat_bot, colour);
+		fillTriangleFlatTop(flat_top, colour);
+	}
 }
 
 void Rasteriser::fillTriangleFlatBot(const Triangle& tri, Uint32 colour) {
 	//compute inverse clope -- change in x with respect to y, as we are using scanline, moving incrementally in y.
-	//float slope1 = (float)(int(tri.points[1].getX()) - int(tri.points[0].getX())) / (int(tri.points[1].getY()) - int(tri.points[0].getY()));
-	//float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
 
 	float slope1 = (float)(tri.points[1].getX() - tri.points[0].getX()) / (tri.points[1].getY() - tri.points[0].getY());
 	float slope2 = (float)(tri.points[2].getX() - tri.points[0].getX()) / (tri.points[2].getY() - tri.points[0].getY());
+
 	float x_start, x_end;
 	x_start = x_end = int(tri.points[0].getX());
 
@@ -117,8 +128,6 @@ void Rasteriser::fillTriangleFlatBot(const Triangle& tri, Uint32 colour) {
 }
 
 void Rasteriser::fillTriangleFlatTop(const Triangle& tri, Uint32 colour) {
-	//float slope1 = (float)(int(tri.points[2].getX()) - int(tri.points[0].getX())) / (int(tri.points[2].getY()) - int(tri.points[0].getY()));
-	//float slope2 = (float)(int(tri.points[2].getX()) - int(tri.points[1].getX())) / (int(tri.points[2].getY()) - int(tri.points[1].getY()));
 
 	float slope1 = (float)(tri.points[2].getX() - tri.points[0].getX()) / (tri.points[2].getY() - tri.points[0].getY());
 	float slope2 = (float)(tri.points[2].getX() - tri.points[1].getX()) / (tri.points[2].getY() - tri.points[1].getY());
