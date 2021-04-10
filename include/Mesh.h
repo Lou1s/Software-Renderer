@@ -13,7 +13,7 @@ struct Face {
 
 struct Triangle {
 	Vector2 points[3];
-
+	float avg_depth;
 	Triangle() {};
 	Triangle(const Vector2& p1, const Vector2& p2, const Vector2& p3) : points{ p1, p2, p3 } {};
 	void translate(const Vector2& trans) {
@@ -57,6 +57,10 @@ public:
 		points[0] += trans;
 		points[1] += trans;
 		points[2] += trans;
+	}
+
+	float getAverageDepth() {
+		return (float(points[0].getZ() + points[1].getZ() + points[2].getZ())) / 3.0;
 	}
 };
 

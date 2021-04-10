@@ -21,10 +21,12 @@ private:
 	Vector3 _camera_pos;
 	std::unique_ptr<Mesh> _mesh;
 	std::vector<Triangle> _rendering_triangles;
+	bool _backface_cull;
 
 	Vector2 project(const Vector3& vec);
-	Triangle Engine::project(const Triangle3D& tri);
-	bool _backface_cull;
+	Triangle project(const Triangle3D& tri);
+	void SortTrianglesPainterAlgorithm();
+	
 
 public:
 	Engine();

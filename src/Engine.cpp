@@ -4,6 +4,7 @@
 #include <math.h>
 #include <SDL_stdinc.h>
 #include <array>
+#include <algorithm>
 
 Engine::Engine() :
 	_rasteriser(nullptr),
@@ -111,7 +112,7 @@ void Engine::update() {
 		Triangle tri = project(tri_3D);
 		//send to the middle f the screen
 		tri.translate(Vector2(_display->getWidth() / 2, _display->getHeight() / 2));
-
+		tri.avg_depth = tri_3D.getAverageDepth();
 		_rendering_triangles.push_back(tri);
 	}
 
@@ -119,6 +120,7 @@ void Engine::update() {
 }
 
 void Engine::render() {
+	SortTrianglesPainterAlgorithm();
 	_rasteriser->drawGrid(0xFF2F4F4F);
 	for (size_t i = 0; i < _rendering_triangles.size(); i++) {
 		//for (size_t j = 0; j < 3; j++) {
@@ -132,6 +134,10 @@ void Engine::render() {
 	_rendering_triangles.clear();
 	_display->update();
 	//_display->clearPixelBuffer(0xFF000000);
+}
+
+void Engine::SortTrianglesPainterAlgorithm() {
+	std::sort(_rendering_triangles.begin(), _rendering_triangles.end(), [](Triangle tri1, Triangle tri2) {return tri1.avg_depth > tri2.avg_depth; });
 }
 
 void Engine::shutdown() {
