@@ -5,6 +5,8 @@
 #define degreesToRadians(angleDegrees) ((angleDegrees) * PI / 180.0)
 #define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / PI)
 
+#include <array>
+
 template <class T>
 class Vec2 {
 private:
@@ -264,5 +266,55 @@ public:
 
 };
 
+template <class T>
+class Matrix2 {
+private:
+	T _data[4];
+public:
+	Matrix2() { for (size_t i = 0; i < 4; i++) { _data[i] = 0.0; } }
+	Matrix2(T m00, T m01, T m10, T m11) : data{ m00, m01, m10, m11 } {}
+	T& operator()(const int& row, const int& col) { return _data[row * 2 + col]; }
+	
+	Matrix2 operator*(const Matrix2& rhs) const {
+		Matrix2 result;
+		for (size_t i = 0; i < 2; i++) {
+			for (size_t j = 0; j < 2; j++) {
+				for (size_t k = 0; k < 2; k++) {
+					result(i, j) += *this(i, k) * rhs(k, j);
+				}
+			}
+		}
+	}
+};
+
+
+template <class T>
+class Matrix3 {
+private:
+	T _data[9];
+public:
+	Matrix3(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22) : data{ m00, m01, m02, m10, m11, m12, m20, m21, m22 } {}
+	Matrix3() { 
+		for (size_t i = 0; i < 9; i++) { _data[i] = 0.0; }
+	}
+	T& operator()(const int& row, const int& col) { return _data[row * 3 + col]; }
+	T operator()(const int& row, const int& col) const { return _data[row * 3 + col]; }
+	Matrix3 operator*(const Matrix3& rhs) const {
+		Matrix3 result;
+		for (size_t i = 0; i < 3; i++) {
+			for (size_t j = 0; j < 3; j++) {
+				for (size_t k = 0; k < 3; k++) {
+					result(i, j) += (*this)(i, k) * rhs(k, j);
+				}
+			}
+		}
+		return result;
+	}
+
+};
+
+
+typedef Matrix3<float> Mat3;
+typedef Matrix2<float> Mat2;
 typedef Vec3<float> Vector3;
 typedef Vec3<double> Vector3_d;
