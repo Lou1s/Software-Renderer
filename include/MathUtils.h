@@ -272,7 +272,7 @@ private:
 	T _data[4];
 public:
 	Matrix2() { for (size_t i = 0; i < 4; i++) { _data[i] = 0.0; } }
-	Matrix2(T m00, T m01, T m10, T m11) : data{ m00, m01, m10, m11 } {}
+	Matrix2(T m00, T m01, T m10, T m11) : _data{ m00, m01, m10, m11 } {}
 	T& operator()(const int& row, const int& col) { return _data[row * 2 + col]; }
 	
 	Matrix2 operator*(const Matrix2& rhs) const {
@@ -284,6 +284,10 @@ public:
 				}
 			}
 		}
+	}
+	friend std::ostream& operator<< (std::ostream& out, const Matrix2<T>& mat) {
+		out << mat._data[0] << ", " << mat._data[1] << std::endl << mat._data[2] << "," << mat._data[3] << std::endl;
+		return out;
 	}
 };
 
