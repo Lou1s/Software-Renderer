@@ -6,7 +6,7 @@
 #define radiansToDegrees(angleRadians) ((angleRadians) * 180.0 / PI)
 
 #include <array>
-
+#include <iostream>
 template <class T>
 class Vec2 {
 private:
@@ -293,7 +293,7 @@ class Matrix3 {
 private:
 	T _data[9];
 public:
-	Matrix3(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22) : data{ m00, m01, m02, m10, m11, m12, m20, m21, m22 } {}
+	Matrix3(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22) : _data{ m00, m01, m02, m10, m11, m12, m20, m21, m22 } {}
 	Matrix3() { 
 		for (size_t i = 0; i < 9; i++) { _data[i] = 0.0; }
 	}
@@ -311,6 +311,12 @@ public:
 		return result;
 	}
 
+	friend std::ostream& operator<< (std::ostream& out, const Matrix3<T>& mat) {
+		out << mat._data[0] << ", " << mat._data[1] << ", " << mat._data[2] << "," << std::endl << mat._data[3] << ", " << mat._data[4] << ", " << mat._data[5] << std::endl << mat._data[6] << ", " << mat._data[7] << ", " << mat._data[8] << std::endl;
+		return out;
+	}
+
+	
 };
 
 
