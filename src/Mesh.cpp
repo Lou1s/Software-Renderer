@@ -7,9 +7,11 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(const std::vector<Vector3>& verts, const std::vector<Face>& f) :
+Mesh::Mesh(const std::vector<Vector4>& verts, const std::vector<Face>& f) :
 	vertices(verts),
-	faces(f)
+	faces(f),
+	transform()
+	
 {
 }
 
@@ -42,7 +44,7 @@ void Mesh::loadFromFile(const std::string& path_to_file) {
 			//reading vert
 			if (first_str == "v") {
 				getLineData(ss, ' ', line_data);
-				Vector3 vert(std::stof(line_data[0]), std::stof(line_data[1]), std::stof(line_data[2]));
+				Vector4 vert(std::stof(line_data[0]), std::stof(line_data[1]), std::stof(line_data[2]),1.0);
 				vertices.push_back(vert);
 				//std::cout << " added vert: (" << vert.getX() << ", " << vert.getY() << ", " << vert.getZ() << ")" << std::endl;
 			}
@@ -68,48 +70,17 @@ void Mesh::loadFromFile(const std::string& path_to_file) {
 }
 
 Vector3 Mesh::getFaceNormal(const int& face_index) {
-	Vector3 ab = vertices[faces[face_index].b - 1] - vertices[faces[face_index].a - 1];
-	Vector3 ac = vertices[faces[face_index].c - 1] - vertices[faces[face_index].a - 1];
+	Vector4 ab = vertices[faces[face_index].b - 1] - vertices[faces[face_index].a - 1];
+	Vector4 ac = vertices[faces[face_index].c - 1] - vertices[faces[face_index].a - 1];
 	return ab.cross(ac);
 }
 
-void Mesh::rotate(const Vector3& rot)
-{
-	for (Vector3& vec : vertices)
+void Mesh::transformMesh(const Mat4& trans) {
+	for (Vector4& vec : vertices)
 	{
-		vec.rotateInPlace(rot);
+		vec = trans * vec;
 	}
-
-	_rotation += rot;
 }
-
-void Mesh::translate(const Vector3& trans)
-{
-	for (Vector3& vec : vertices)
-	{
-		vec += trans;
-	}
-	_translation += trans;
-}
-
-void Mesh::scale(const float& x, const float& y, const float& z)
-{
-	for (Vector3& vec : vertices)
-	{
-		vec.set(vec.getX() * x, vec.getY() * y, vec.getZ() * z);
-
-	}
-	_scale.set(_scale.getX() * x, _scale.getY() * y, _scale.getZ() * z);
-}
-
-Vector3 Mesh::getRotation() {
-	return _rotation;
-}
-
-Vector3 Mesh::getScale() {
-	return _scale;
-}
-
-Vector3 Mesh::getTranslation() {
-	return _translation;
+void Mesh::transformMesh() {
+	transformMesh(transform);
 }

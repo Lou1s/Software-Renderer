@@ -126,6 +126,7 @@ void Engine::render() {
 		//for (size_t j = 0; j < 3; j++) {
 			//_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
 		//}
+		//std::cout << i << "'s depth: " << _rendering_triangles[i].avg_depth << std::endl;
 		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
 		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFFA9A9A9);
 		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::WIREFRAME);

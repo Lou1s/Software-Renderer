@@ -107,6 +107,10 @@ typedef Vec2<float> Vector2;
 typedef Vec2<double> Vector2_d;
 typedef Vec2<int> Vector2_I;
 
+//forward declaration of vec4 for use in a vec3 constructor
+template <class T>
+class Vec4;
+
 template <class T>
 class Vec3 {
 private:
@@ -115,6 +119,7 @@ public:
 	Vec3() : _xyz{ 0.0, 0.0, 0.0 } {}
 	Vec3(T x, T y, T z) : _xyz{ x, y, z } {}
 	Vec3(const Vec3<T>& vec) : _xyz{ vec.getX(), vec.getY(), vec.getZ() } {}
+	Vec3(const Vec4<T>& vec) : _xyz{ vec.getX(), vec.getY(), vec.getZ() } {}
 
 	T getX() const { return _xyz[0]; }
 	T getY() const { return _xyz[1]; }
@@ -289,25 +294,158 @@ public:
 		out << mat._data[0] << ", " << mat._data[1] << std::endl << mat._data[2] << "," << mat._data[3] << std::endl;
 		return out;
 	}
+
+	Vec2<T> operator*(const Vec2& rhs) const {
+		Vec2<T> result;
+		result.set(rhs.getX() * _data[0] + rhs.getY() * _data[1], rhs.getX() * _data[2] + rhs.getY() * _data[3])
+			return result;
+	}
+
+	void setRot(const T& angle) {
+		T ang = degreesToRadians(angle);
+		_data[0] = cos(ang);
+		_data[1] = -sin(ang);
+		_data[2] = sin(ang);
+		_data[3] = cos(ang);
+	}
+};
+template <class T>
+class Vec4 {
+private:
+	T _xyzw[4];
+public:
+	//this whole class needs to be fixed up to diff between points and vectors.
+	Vec4() : _xyzw{ 0.0, 0.0, 0.0, 1.0 } {}
+	Vec4(T x, T y, T z, T w) : _xyzw{ x, y, z, w } {}
+	Vec4(const Vec4<T>& vec) : _xyzw{ vec.getX(), vec.getY(), vec.getZ(), vec.getW() } {}
+	Vec4(const Vec3<T>& vec) : _xyzw{ vec.getX(), vec.getY(), vec.getZ(), 1.0 } {}
+
+	T getX() const { return _xyzw[0]; }
+	T getY() const { return _xyzw[1]; }
+	T getZ() const { return _xyzw[2]; }
+	T getW() const { return _xyzw[2]; }
+
+	void setX(const T x) { _xyzw[0] = x; }
+	void setY(const T y) { _xyzw[1] = y; }
+	void setZ(const T z) { _xyzw[2] = z; }
+	void setW(const T w) { _xyzw[2] = w; }
+
+	void set(const float& x, const float& y, const float& z) { setX(x); setY(y); setZ(z); setW(w); }
+
+	Vec4 operator+ (const Vec4& vec) const {
+		return Vec4(
+			_xyzw[0] + vec._xyzw[0],
+			_xyzw[1] + vec._xyzw[1],
+			_xyzw[2] + vec._xyzw[2],
+			_xyzw[3] + vec._xyzw[3]
+			);
+	}
+	Vec4 operator- (const Vec4& vec) const {
+		return Vec4(
+			_xyzw[0] - vec._xyzw[0],
+			_xyzw[1] - vec._xyzw[1],
+			_xyzw[2] - vec._xyzw[2],
+			_xyzw[3] - vec._xyzw[3]
+		);
+	}
+	Vec4 operator* (T n) const {
+		return Vec4(
+			_xyzw[0] * n,
+			_xyzw[1] * n,
+			_xyzw[2] * n,
+			_xyzw[3]
+		);
+	}
+
+	Vec4 operator/ (T n) const {
+		return Vec4(
+			_xyzw[0] / n,
+			_xyzw[1] / n,
+			_xyzw[2] / n,
+			_xyzw[3]
+		);
+	}
+
+	void operator/= (T n) {
+		_xyzw[0] /= n;
+		_xyzw[1] /= n;
+		_xyzw[2] /= n;
+	}
+	void operator*= (T n) {
+		_xyzw[0] *= n;
+		_xyzw[1] *= n;
+		_xyzw[2] *= n;
+	}
+	void operator-= (const Vec4& vec) {
+		_xyzw[0] -= vec._xyzw[0];
+		_xyzw[1] -= vec._xyzw[1];
+		_xyzw[2] -= vec._xyzw[2];
+	}
+	void operator+= (const Vec4& vec) {
+		_xyzw[0] += vec._xyzw[0];
+		_xyzw[1] += vec._xyzw[1];
+		_xyzw[2] += vec._xyzw[2];
+	}
+	bool operator == (const Vec4& vec) const {
+		return _xyz == vec._xyz;
+	}
+
+	Vec4& normalise() {
+		T ln = length();
+		if (ln > 0)
+			*this /= ln;
+		return *this;
+	}
+	T length() const {
+		return(std::sqrt(_xyz[0] * _xyz[0] + _xyz[1] * _xyz[1] + _xyz[2] * _xyz[2]));
+	}
+	T dot(const Vec4& vec) const {
+		return (_xyz[0] * vec._xyz[0]) + (_xyz[1] * vec._xyz[1]) + (_xyz[2] * vec._xyz[2]);
+	}
+	T distance(const Vec4& vec) const {
+		dist_x = _xyz[0] - vec._xyz[0];
+		dist_y = _xyz[1] - vec._xyz[1];
+		dist_z = _xyz[2] - vec._xyz[2];
+		return std::sqrt(dist_x * dist_x + dist_y * dist_y + dist_z + dist_z);
+	}
+	Vec3<T> cross(const Vec4& vec) const {
+		return Vec3<T>(
+			_xyzw[1] * vec._xyzw[2] - _xyzw[2] * vec._xyzw[1],
+			_xyzw[2] * vec._xyzw[0] - _xyzw[0] * vec._xyzw[2],
+			_xyzw[0] * vec._xyzw[1] - _xyzw[1] * vec._xyzw[0]
+			);
+	}
+
+	T& operator[](const int& i) { return _xyzw[i]; }
+	T operator[](const int& i) const { return _xyzw[i]; }
+
 };
 
-
 template <class T>
-class Matrix3 {
+class Matrix4 {
 private:
-	T _data[9];
+	T _data[16];
 public:
-	Matrix3(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22) : _data{ m00, m01, m02, m10, m11, m12, m20, m21, m22 } {}
-	Matrix3() { 
-		for (size_t i = 0; i < 9; i++) { _data[i] = 0.0; }
+	Matrix4(T m00, T m01, T m02, T m03, T m10, T m11, T m12, T m13, T m20, T m21, T m22, T m23, T m30, T m31, T m32, T m33) : _data{ m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33 } {}
+	Matrix4() { 
+		makeIdentity();
 	}
-	T& operator()(const int& row, const int& col) { return _data[row * 3 + col]; }
-	T operator()(const int& row, const int& col) const { return _data[row * 3 + col]; }
-	Matrix3 operator*(const Matrix3& rhs) const {
-		Matrix3 result;
-		for (size_t i = 0; i < 3; i++) {
-			for (size_t j = 0; j < 3; j++) {
-				for (size_t k = 0; k < 3; k++) {
+	void makeIdentity() {
+		for (size_t i = 0; i < 9; i++) {
+			_data[i] = 0.0;
+		}
+		_data[0] = 1.0;
+		_data[5] = 1.0;
+		_data[10] = 1.0;
+	}
+	T& operator()(const int& row, const int& col) { return _data[row * 4 + col]; }
+	T operator()(const int& row, const int& col) const { return _data[row * 4 + col]; }
+	
+	Matrix4 operator*(const Matrix4& rhs) {
+		Matrix4 result;
+		for (size_t i = 0; i < 4; i++) {
+			for (size_t j = 0; j < 4; j++) {
+				for (size_t k = 0; k < 4; k++) {
 					result(i, j) += (*this)(i, k) * rhs(k, j);
 				}
 			}
@@ -315,16 +453,49 @@ public:
 		return result;
 	}
 
-	friend std::ostream& operator<< (std::ostream& out, const Matrix3<T>& mat) {
-		out << mat._data[0] << ", " << mat._data[1] << ", " << mat._data[2] << "," << std::endl << mat._data[3] << ", " << mat._data[4] << ", " << mat._data[5] << std::endl << mat._data[6] << ", " << mat._data[7] << ", " << mat._data[8] << std::endl;
+	friend std::ostream& operator<< (std::ostream& out, const Matrix4<T>& mat) {
+		for (size_t i = 0; i < 4; i++) {
+			for (size_t j = 0; j < 4; j++) {
+				out << _data[i + j] << " "
+			}
+			out << endl;
+		}
 		return out;
 	}
+
+	friend Vec4<T> operator*(const Matrix4& mat, const Vec4<T>& vec) {
+		Vec4<T> result;
+		for (size_t i = 0; i < 4; i++) {
+			result[i] = 0.0;
+			for (size_t j = 0; j < 4; j++) {
+				result[i] += mat(i, j) * vec[j];
+			}
+		}
+		return result;
+	}
+	
+	void setScale(T x, T y, T z) {
+		makeIdentity();
+		_data[0] = x;
+		_data[5] = y;
+		_data[10] = z;
+	}
+
+	void addcale(T x, T y, T z) {
+		_data[0] *= x;
+		_data[5] *= y;
+		_data[10] *= z;
+	}
+
+	
 
 	
 };
 
 
-typedef Matrix3<float> Mat3;
+
+typedef Vec4<float> Vector4;
+typedef Matrix4<float> Mat4;
 typedef Matrix2<float> Mat2;
 typedef Vec3<float> Vector3;
 typedef Vec3<double> Vector3_d;

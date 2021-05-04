@@ -34,6 +34,7 @@ private:
 public:
 	Triangle3D() {};
 	Triangle3D(const Vector3& p1, const Vector3& p2, const Vector3& p3) : points{ p1, p2, p3 } {};
+	Triangle3D(const Vector4& p1, const Vector4& p2, const Vector4& p3) : points{ Vector3(p1), Vector3(p2), Vector3(p3) } {};
 	
 	Vector3 normal() {
 		Vector3 ab = (points[1] - points[0]).normalise();
@@ -68,32 +69,29 @@ class Mesh
 {
 public:
 
-	std::vector<Vector3> vertices;
+	std::vector<Vector4> vertices;
 	std::vector<Face>  faces;
+	Mat4 transform;
 
 	//computed vertex properties:
-	std::vector<Vector3> normals;
+	//std::vector<Vector3> normals;
 
 	Mesh();
 	Mesh(const std::string& path_to_mesh);
-	Mesh(const std::vector<Vector3> &verts, const std::vector<Face> &f);
+	Mesh(const std::vector<Vector4> &verts, const std::vector<Face> &f);
 
 	void loadFromFile(const std::string& path_to_file);
 
-	void rotate(const Vector3 &rot);
-	void translate(const Vector3 &trans);
-	void scale(const float &x, const float& y, const float& z);
+	void transformMesh(const Mat4& trans);
+	void transformMesh();
+
 
 	Vector3 getFaceNormal(const int& face_index);
 
-	Vector3 getRotation();
-	Vector3 getScale();
-	Vector3 getTranslation();
+	
 
 private:
-	Vector3 _rotation;
-	Vector3 _translation;
-	Vector3 _scale;
+	
 
 };
 
