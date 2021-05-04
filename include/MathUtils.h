@@ -455,9 +455,10 @@ public:
 	}
 
 	friend std::ostream& operator<< (std::ostream& out, const Matrix4<T>& mat) {
+		out << std::endl;
 		for (size_t i = 0; i < 4; i++) {
 			for (size_t j = 0; j < 4; j++) {
-				out << mat._data[i + j] << " ";
+				out << mat(i, j) << " ";
 			}
 			out << std::endl;
 		}
@@ -497,7 +498,6 @@ public:
 		(*this)(0, 3) += x;
 		(*this)(1, 3) += y;
 		(*this)(2, 3) += z;
-		std::cout << (*this) << std::endl;
 	}
 
 	void setRotation(T x, T y, T z) {
