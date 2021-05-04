@@ -431,12 +431,13 @@ public:
 		makeIdentity();
 	}
 	void makeIdentity() {
-		for (size_t i = 0; i < 9; i++) {
+		for (size_t i = 0; i < 16; i++) {
 			_data[i] = 0.0;
 		}
-		_data[0] = 1.0;
-		_data[5] = 1.0;
-		_data[10] = 1.0;
+		(*this)(0, 0) = 1.0;
+		(*this)(1, 1) = 1.0;
+		(*this)(2, 2) = 1.0;
+		(*this)(3, 3) = 1.0;
 	}
 	T& operator()(const int& row, const int& col) { return _data[row * 4 + col]; }
 	T operator()(const int& row, const int& col) const { return _data[row * 4 + col]; }
@@ -456,9 +457,9 @@ public:
 	friend std::ostream& operator<< (std::ostream& out, const Matrix4<T>& mat) {
 		for (size_t i = 0; i < 4; i++) {
 			for (size_t j = 0; j < 4; j++) {
-				out << _data[i + j] << " "
+				out << mat._data[i + j] << " ";
 			}
-			out << endl;
+			out << std::endl;
 		}
 		return out;
 	}
@@ -476,20 +477,19 @@ public:
 	
 	void setScale(T x, T y, T z) {
 		makeIdentity();
-		_data[0] = x;
-		_data[5] = y;
-		_data[10] = z;
+		(*this)(0,0) = x;
+		(*this)(1,1) = y;
+		(*this)(2,2) = z;
 	}
 
 	void addcale(T x, T y, T z) {
-		_data[0] *= x;
-		_data[5] *= y;
-		_data[10] *= z;
+		std::cout << "original: " << *this << std::endl;
+		(*this)(0, 0) *= x;
+		(*this)(1, 1) *= y;
+		(*this)(2, 2) *= z;
+		std::cout << "added scale: " << *this << std::endl;
 	}
 
-	
-
-	
 };
 
 

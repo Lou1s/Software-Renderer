@@ -81,8 +81,6 @@ public:
 	Mesh(const std::vector<Vector4> &verts, const std::vector<Face> &f);
 
 	void loadFromFile(const std::string& path_to_file);
-
-	void transformMesh(const Mat4& trans);
 	void transformMesh();
 
 

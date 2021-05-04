@@ -88,17 +88,20 @@ void Engine::update() {
 	}
 	_previous_frame_time = SDL_GetTicks();
 	_rendering_triangles.clear();
+	_mesh->transform.addcale(1.002, 1, 1);
+	_mesh->transformMesh();
+	//mesh_rotation += Vector3(6,2,4);
+	//add rotation(6,2,4)
+	//add translate(0,0,5)
 	
-	mesh_rotation += Vector3(6,2,4);
-
 	for (size_t i = 0; i < _mesh->faces.size(); i++) {
 		Face mesh_face = _mesh->faces[i];
 		Triangle3D tri_3D(_mesh->vertices[mesh_face.a - 1], _mesh->vertices[mesh_face.b - 1], _mesh->vertices[mesh_face.c - 1]);
 
 		//apply rotation
-		tri_3D.rotateInPlace(mesh_rotation);
+		//tri_3D.rotateInPlace(mesh_rotation); //no need?
 		//translate away from the camera in z
-		tri_3D.translate(Vector3(0, 0, 5));
+		tri_3D.translate(Vector3(0, 0, 5)); //no need?
 
 		//backface culling
 		if (_backface_cull) {

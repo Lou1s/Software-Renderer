@@ -75,12 +75,11 @@ Vector3 Mesh::getFaceNormal(const int& face_index) {
 	return ab.cross(ac);
 }
 
-void Mesh::transformMesh(const Mat4& trans) {
+void Mesh::transformMesh() {
 	for (Vector4& vec : vertices)
 	{
-		vec = trans * vec;
+		std::cout << "Vec: " << vec.getX() << ", " << vec.getY() << ", " << vec.getZ() << ", " << vec.getW() << std::endl;
+		vec = transform * vec;
+		std::cout << "Vec transformed: " << vec.getX() << ", " << vec.getY() << ", " << vec.getZ() << ", " << vec.getW() << std::endl;
 	}
-}
-void Mesh::transformMesh() {
-	transformMesh(transform);
 }
