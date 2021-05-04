@@ -476,18 +476,42 @@ public:
 	}
 	
 	void setScale(T x, T y, T z) {
-		makeIdentity();
 		(*this)(0,0) = x;
 		(*this)(1,1) = y;
 		(*this)(2,2) = z;
 	}
 
-	void addcale(T x, T y, T z) {
-		std::cout << "original: " << *this << std::endl;
+	void addScale(T x, T y, T z) {
 		(*this)(0, 0) *= x;
 		(*this)(1, 1) *= y;
 		(*this)(2, 2) *= z;
-		std::cout << "added scale: " << *this << std::endl;
+	}
+
+	void setTranslation(T x, T y, T z) {
+		(*this)(0, 3) = x;
+		(*this)(1, 3) = y;
+		(*this)(2, 3) = z;
+	}
+
+	void addTranslation(T x, T y, T z) {
+		(*this)(0, 3) += x;
+		(*this)(1, 3) += y;
+		(*this)(2, 3) += z;
+		std::cout << (*this) << std::endl;
+	}
+
+	void setRotation(T x, T y, T z) {
+		T x_ang, y_ang, z_ang;
+		x_ang = degreesToRadians(x);
+		y_ang = degreesToRadians(y);
+		z_ang = degreesToRadians(z);
+	}
+
+	void addRotation(T x, T y, T z) {
+		T x_ang, y_ang, z_ang;
+		x_ang = degreesToRadians(x);
+		y_ang = degreesToRadians(y);
+		z_ang = degreesToRadians(z);
 	}
 
 };
