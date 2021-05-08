@@ -60,6 +60,13 @@ public:
 		points[2] += trans;
 	}
 
+	void transform(const Mat4& trans) {
+		for (Vector3& vec : points) {
+			Vector4 vec_4(vec);
+			vec = Vector3(trans* vec_4);
+		}
+	}
+
 	float getAverageDepth() {
 		return (float(points[0].getZ() + points[1].getZ() + points[2].getZ())) / 3.0;
 	}
@@ -82,6 +89,7 @@ public:
 
 	void loadFromFile(const std::string& path_to_file);
 	void transformMesh();
+	void transformMesh(const Mat4& mat);
 
 
 	Vector3 getFaceNormal(const int& face_index);

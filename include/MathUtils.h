@@ -245,8 +245,8 @@ public:
 		float rad_angle = degreesToRadians(angle);
 		float x = _xyz[0];
 		float z = _xyz[2];
-		_xyz[0] = x * cos(rad_angle) - z * sin(rad_angle);
-		_xyz[2] = x * sin(rad_angle) + z * cos(rad_angle);
+		_xyz[0] = x * cos(rad_angle) + z * sin(rad_angle);
+		_xyz[2] = x * -sin(rad_angle)  + z * cos(rad_angle);
 
 	}
 	Vec3 rotateY(const float& rot) {
@@ -315,7 +315,7 @@ private:
 	T _xyzw[4];
 public:
 	//this whole class needs to be fixed up to diff between points and vectors.
-	Vec4() : _xyzw{ 0.0, 0.0, 0.0, 1.0 } {}
+	Vec4() : _xyzw{ 0.0, 0.0, 0.0, 0.0 } {}
 	Vec4(T x, T y, T z, T w) : _xyzw{ x, y, z, w } {}
 	Vec4(const Vec4<T>& vec) : _xyzw{ vec.getX(), vec.getY(), vec.getZ(), vec.getW() } {}
 	Vec4(const Vec3<T>& vec) : _xyzw{ vec.getX(), vec.getY(), vec.getZ(), 1.0 } {}
@@ -323,14 +323,14 @@ public:
 	T getX() const { return _xyzw[0]; }
 	T getY() const { return _xyzw[1]; }
 	T getZ() const { return _xyzw[2]; }
-	T getW() const { return _xyzw[2]; }
+	T getW() const { return _xyzw[3]; }
 
 	void setX(const T x) { _xyzw[0] = x; }
 	void setY(const T y) { _xyzw[1] = y; }
 	void setZ(const T z) { _xyzw[2] = z; }
-	void setW(const T w) { _xyzw[2] = w; }
+	void setW(const T w) { _xyzw[3] = w; }
 
-	void set(const float& x, const float& y, const float& z) { setX(x); setY(y); setZ(z); setW(w); }
+	void set(const float& x, const float& y, const float& w) { setX(x); setY(y); setZ(z); setW(w); }
 
 	Vec4 operator+ (const Vec4& vec) const {
 		return Vec4(
@@ -419,6 +419,11 @@ public:
 	T& operator[](const int& i) { return _xyzw[i]; }
 	T operator[](const int& i) const { return _xyzw[i]; }
 
+	friend std::ostream& operator<< (std::ostream& out, const Vec4<T>& vec) {
+		out << "(" << vec.getX() << "," << vec.getY() << "," << vec.getZ() << "," << vec.getW() << ")";
+		return out;
+	}
+
 };
 
 template <class T>
@@ -446,12 +451,17 @@ public:
 		Matrix4 result;
 		for (size_t i = 0; i < 4; i++) {
 			for (size_t j = 0; j < 4; j++) {
+				result(i, j) = 0.0;
 				for (size_t k = 0; k < 4; k++) {
 					result(i, j) += (*this)(i, k) * rhs(k, j);
 				}
 			}
 		}
 		return result;
+	}
+
+	void operator *=(const Matrix4& mat) {
+		(*this) = (*this) * mat;
 	}
 
 	friend std::ostream& operator<< (std::ostream& out, const Matrix4<T>& mat) {
@@ -468,7 +478,6 @@ public:
 	friend Vec4<T> operator*(const Matrix4& mat, const Vec4<T>& vec) {
 		Vec4<T> result;
 		for (size_t i = 0; i < 4; i++) {
-			result[i] = 0.0;
 			for (size_t j = 0; j < 4; j++) {
 				result[i] += mat(i, j) * vec[j];
 			}
@@ -476,43 +485,81 @@ public:
 		return result;
 	}
 	
-	void setScale(T x, T y, T z) {
-		(*this)(0,0) = x;
-		(*this)(1,1) = y;
-		(*this)(2,2) = z;
+	void makeScale(T x, T y, T z) {
+		(*this).makeIdentity();
+		(*this)(0, 0) = x;
+		(*this)(1, 1) = y;
+		(*this)(2, 2) = z;
 	}
 
 	void addScale(T x, T y, T z) {
-		(*this)(0, 0) *= x;
-		(*this)(1, 1) *= y;
-		(*this)(2, 2) *= z;
+		Matrix4 scale;
+		scale(0, 0) = x;
+		scale(1, 1) = y;
+		scale(2, 2) = z;
+		(*this) = scale * (*this);
 	}
 
-	void setTranslation(T x, T y, T z) {
+
+	void addTranslation(T x, T y, T z) {
+		Matrix4 translate;
+		translate(0, 3) = x;
+		translate(1, 3) = y;
+		translate(2, 3) = z;
+		(*this) = translate * (*this);
+
+	}
+
+	void makeTranslation(T x, T y, T z) {
+		(*this).makeIdentity();
 		(*this)(0, 3) = x;
 		(*this)(1, 3) = y;
 		(*this)(2, 3) = z;
-	}
 
-	void addTranslation(T x, T y, T z) {
-		(*this)(0, 3) += x;
-		(*this)(1, 3) += y;
-		(*this)(2, 3) += z;
-	}
-
-	void setRotation(T x, T y, T z) {
-		T x_ang, y_ang, z_ang;
-		x_ang = degreesToRadians(x);
-		y_ang = degreesToRadians(y);
-		z_ang = degreesToRadians(z);
 	}
 
 	void addRotation(T x, T y, T z) {
-		T x_ang, y_ang, z_ang;
-		x_ang = degreesToRadians(x);
-		y_ang = degreesToRadians(y);
-		z_ang = degreesToRadians(z);
+		Matrix4 z_rot_mat;
+		if (z != 0) {
+			T z_ang = degreesToRadians(z);
+			T c_z = cos(z_ang);
+			T s_z = sin(z_ang);
+			z_rot_mat(0, 0) = c_z;
+			z_rot_mat(0, 1) = -s_z;
+			z_rot_mat(1, 0) = s_z;
+			z_rot_mat(1, 1) = c_z;
+			(*this) = z_rot_mat * (*this);
+		}
+
+		Matrix4 y_rot_mat;
+		if (y != 0) {
+			T y_ang = degreesToRadians(y);
+			T c_y = cos(y_ang);
+			T s_y = sin(y_ang);
+			y_rot_mat(0, 0) = c_y;
+			y_rot_mat(0, 2) = s_y;
+			y_rot_mat(2, 0) = -s_y;
+			y_rot_mat(2, 2) = c_y;
+			(*this) = y_rot_mat * (*this);
+		}
+		
+		Matrix4 x_rot_mat;
+		if (x != 0) {
+			T x_ang = degreesToRadians(x);
+			T c_x = cos(x_ang);
+			T s_x = sin(x_ang);
+			x_rot_mat(1, 1) = c_x;
+			x_rot_mat(1, 2) = -s_x;
+			x_rot_mat(2, 1) = s_x;
+			x_rot_mat(2, 2) = c_x;
+			(*this) = x_rot_mat * (*this);
+		}		
 	}
+	void makeRotation(T x, T y, T z) {
+		makeIdentity();
+		addRotation(x, y, z);
+	}
+
 
 };
 

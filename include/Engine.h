@@ -26,7 +26,7 @@ private:
 	Vector2 project(const Vector3& vec);
 	Triangle project(const Triangle3D& tri);
 	void SortTrianglesPainterAlgorithm();
-	
+	float _translate_factor_x;
 
 public:
 	Engine();

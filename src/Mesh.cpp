@@ -46,7 +46,6 @@ void Mesh::loadFromFile(const std::string& path_to_file) {
 				getLineData(ss, ' ', line_data);
 				Vector4 vert(std::stof(line_data[0]), std::stof(line_data[1]), std::stof(line_data[2]),1.0);
 				vertices.push_back(vert);
-				//std::cout << " added vert: (" << vert.getX() << ", " << vert.getY() << ", " << vert.getZ() << ")" << std::endl;
 			}
 			//reading face
 			else if (first_str == "f") {
@@ -61,7 +60,6 @@ void Mesh::loadFromFile(const std::string& path_to_file) {
 				if (face_vals.size() == 3) {
 					Face fc(std::stoi(face_vals[0]), std::stoi(face_vals[1]), std::stoi(face_vals[2]));
 					faces.push_back(fc);
-					//std::cout << " added face: (" << fc.a << ", " << fc.b << ", " << fc.c << ")" << std::endl;
 				}
 			}
 		}
@@ -79,5 +77,11 @@ void Mesh::transformMesh() {
 	for (Vector4& vec : vertices)
 	{
 		vec = transform * vec;
+	}
+}
+void Mesh::transformMesh(const Mat4& mat) {
+	for (Vector4& vec : vertices)
+	{
+		vec = mat * vec;
 	}
 }

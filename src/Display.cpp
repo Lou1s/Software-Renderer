@@ -82,9 +82,4 @@ int Display::getHeight() {
 	return _height;
 }
 Display::~Display() {
-	//std::cout << "Display - Shutdown" << std::endl;
-	//SDL_DestroyTexture(_frame_texture);
-   // delete[] _pixel_buffer;
-	//SDL_DestroyRenderer(_SDL_renderer);
-	//SDL_DestroyWindow(_window);
 }

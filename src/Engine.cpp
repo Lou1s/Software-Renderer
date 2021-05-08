@@ -13,8 +13,10 @@ Engine::Engine() :
 	_fov_factor(640),
 	_camera_pos(0, 0, -5),
 	_previous_frame_time(0),
+	mesh_rotation(0, 2, 0),
 	_mesh(nullptr),
-	_backface_cull(true)
+	_backface_cull(true),
+	_translate_factor_x(0.2)
 {
 
 }
@@ -29,9 +31,9 @@ void Engine::init() {
 	SDL_GetCurrentDisplayMode(0, &display_mode);
 	_display = std::make_shared<Display>(display_mode.w, display_mode.h, "Software Renderer");
 	_rasteriser = std::make_unique<Rasteriser>(_display);
-	mesh_rotation = Vector3(0, 0, 0);
 	_is_running = true;
 	_mesh = std::make_unique<Mesh>();
+
 
 }
 
@@ -87,22 +89,18 @@ void Engine::update() {
 		SDL_Delay(time_to_wait);
 	}
 	_previous_frame_time = SDL_GetTicks();
-	_rendering_triangles.clear();
-	_mesh->transform.addcale(1.002, 1, 1);
-	_mesh->transformMesh();
-	//mesh_rotation += Vector3(6,2,4);
-	//add rotation(6,2,4)
-	//add translate(0,0,5)
+	mesh_rotation += Vector3(0, 200, 0);
+	_mesh->transform.makeRotation(mesh_rotation.getX(),mesh_rotation.getY(),mesh_rotation.getZ());
+	_mesh->transform.addTranslation(0, 0, 5);
+	std::vector<Vector4> verts(_mesh->vertices);
+	
+	for (Vector4& vert : verts) {
+			vert = _mesh->transform * vert;
+	}
 	
 	for (size_t i = 0; i < _mesh->faces.size(); i++) {
 		Face mesh_face = _mesh->faces[i];
-		Triangle3D tri_3D(_mesh->vertices[mesh_face.a - 1], _mesh->vertices[mesh_face.b - 1], _mesh->vertices[mesh_face.c - 1]);
-
-		//apply rotation
-		//tri_3D.rotateInPlace(mesh_rotation); //no need?
-		//translate away from the camera in z
-		tri_3D.translate(Vector3(0, 0, 5)); //no need?
-
+		Triangle3D tri_3D(verts[mesh_face.a - 1], verts[mesh_face.b - 1], verts[mesh_face.c - 1]);
 		//backface culling
 		if (_backface_cull) {
 			Vector3 camera_ray = (_camera_pos - tri_3D.a()).normalise();
@@ -126,10 +124,6 @@ void Engine::render() {
 	SortTrianglesPainterAlgorithm();
 	_rasteriser->drawGrid(0xFF2F4F4F);
 	for (size_t i = 0; i < _rendering_triangles.size(); i++) {
-		//for (size_t j = 0; j < 3; j++) {
-			//_rasteriser->drawRectangle(tri.points[j].getX(), tri.points[j].getY(), 3, 3, 0xFF00FFFF);
-		//}
-		//std::cout << i << "'s depth: " << _rendering_triangles[i].avg_depth << std::endl;
 		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
 		_rasteriser->drawTriangle(_rendering_triangles[i], 0xFFA9A9A9);
 		_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::WIREFRAME);
