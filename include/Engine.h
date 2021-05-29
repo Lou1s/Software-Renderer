@@ -17,7 +17,7 @@ private:
 	bool _is_running;
 	float _fov_factor;
 	int _previous_frame_time;
-	Vector3 mesh_rotation;
+	Vector3 _mesh_rotation;
 	Vector3 _camera_pos;
 	std::unique_ptr<Mesh> _mesh;
 	std::vector<Triangle> _rendering_triangles;
@@ -38,7 +38,6 @@ public:
 	void processInput();
 	void update();
 	void render();
-	void shutdown();
 };
 //misc functions for testing, from the course
 

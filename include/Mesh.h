@@ -79,6 +79,9 @@ public:
 	std::vector<Vector4> vertices;
 	std::vector<Face>  faces;
 	Mat4 transform;
+	Vector3 scale;
+	Vector3 rotation;
+	Vector3 translation;
 
 	//computed vertex properties:
 	//std::vector<Vector3> normals;
@@ -90,7 +93,7 @@ public:
 	void loadFromFile(const std::string& path_to_file);
 	void transformMesh();
 	void transformMesh(const Mat4& mat);
-
+	void computeTransform();
 
 	Vector3 getFaceNormal(const int& face_index);
 

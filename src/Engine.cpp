@@ -13,8 +13,8 @@ Engine::Engine() :
 	_fov_factor(640),
 	_camera_pos(0, 0, -5),
 	_previous_frame_time(0),
-	mesh_rotation(0, 2, 0),
-	_mesh(nullptr),
+	_mesh_rotation(0, 2, 0),
+	_mesh(),
 	_backface_cull(true),
 	_translate_factor_x(0.2)
 {
@@ -39,6 +39,7 @@ void Engine::init() {
 
 void Engine::setup() {
 	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\cube.obj");
+	_mesh->translation.setZ(5);
 	_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
 }
 
@@ -89,11 +90,13 @@ void Engine::update() {
 		SDL_Delay(time_to_wait);
 	}
 	_previous_frame_time = SDL_GetTicks();
-	mesh_rotation += Vector3(0, 200, 0);
-	_mesh->transform.makeRotation(mesh_rotation.getX(),mesh_rotation.getY(),mesh_rotation.getZ());
-	_mesh->transform.addTranslation(0, 0, 5);
-	std::vector<Vector4> verts(_mesh->vertices);
 	
+	// add any extra scales, rotatations or translations here
+	_mesh->rotation += Vector3(0, 200, 0);
+	_mesh->computeTransform();
+
+	std::vector<Vector4> verts(_mesh->vertices);
+
 	for (Vector4& vert : verts) {
 			vert = _mesh->transform * vert;
 	}
@@ -121,6 +124,7 @@ void Engine::update() {
 }
 
 void Engine::render() {
+	//very naive painter's algo
 	SortTrianglesPainterAlgorithm();
 	_rasteriser->drawGrid(0xFF2F4F4F);
 	for (size_t i = 0; i < _rendering_triangles.size(); i++) {
@@ -131,17 +135,12 @@ void Engine::render() {
 	}
 	_rendering_triangles.clear();
 	_display->update();
-	//_display->clearPixelBuffer(0xFF000000);
 }
 
 void Engine::SortTrianglesPainterAlgorithm() {
 	std::sort(_rendering_triangles.begin(), _rendering_triangles.end(), [](Triangle tri1, Triangle tri2) {return tri1.avg_depth > tri2.avg_depth; });
 }
 
-void Engine::shutdown() {
-	//delete _display;
-	//delete _raytracer;
-}
 
 
 

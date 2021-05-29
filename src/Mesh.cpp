@@ -3,14 +3,20 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-Mesh::Mesh()
+Mesh::Mesh():
+	scale(1, 1, 1),
+	rotation(0, 0, 0),
+	translation(0, 0, 0)
 {
 }
 
 Mesh::Mesh(const std::vector<Vector4>& verts, const std::vector<Face>& f) :
 	vertices(verts),
 	faces(f),
-	transform()
+	transform(),
+	scale(1,1,1),
+	rotation(0,0,0),
+	translation(0,0,0)
 	
 {
 }
@@ -24,7 +30,11 @@ void getLineData(std::stringstream &ss_in, char delim, std::vector<std::string>&
 
 }
 
-Mesh::Mesh(const std::string& path_to_file) {
+Mesh::Mesh(const std::string& path_to_file): 
+	scale(1, 1, 1),
+	rotation(0, 0, 0),
+	translation(0, 0, 0) 
+{
 	loadFromFile(path_to_file);
 }
 
@@ -84,4 +94,11 @@ void Mesh::transformMesh(const Mat4& mat) {
 	{
 		vec = mat * vec;
 	}
+}
+
+void Mesh::computeTransform() {
+	transform.makeIdentity();
+	transform.addScale(scale);
+	transform.addRotation(rotation);
+	transform.addTranslation(translation);
 }

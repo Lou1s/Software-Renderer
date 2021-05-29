@@ -269,6 +269,11 @@ public:
 		return result;
 	}
 
+	friend std::ostream& operator<< (std::ostream& out, const Vec3<T>& vec) {
+		out << "(" << vec.getX() << "," << vec.getY() << "," << vec.getZ() << ")";
+		return out;
+	}
+
 };
 
 template <class T>
@@ -308,6 +313,7 @@ public:
 		_data[2] = sin(ang);
 		_data[3] = cos(ang);
 	}
+	
 };
 template <class T>
 class Vec4 {
@@ -500,6 +506,10 @@ public:
 		(*this) = scale * (*this);
 	}
 
+	void addScale(const Vec3<T>& vec) {
+		addScale(vec.getX(), vec.getY(), vec.getZ());
+	}
+
 
 	void addTranslation(T x, T y, T z) {
 		Matrix4 translate;
@@ -510,12 +520,19 @@ public:
 
 	}
 
+	void addTranslation(const Vec3<T>& vec) {
+		addTranslation(vec.getX(), vec.getY(), vec.getZ());
+	}
+
 	void makeTranslation(T x, T y, T z) {
 		(*this).makeIdentity();
 		(*this)(0, 3) = x;
 		(*this)(1, 3) = y;
 		(*this)(2, 3) = z;
 
+	}
+	void addRotation(const Vec3<T>& vec) {
+		addRotation(vec.getX(), vec.getY(), vec.getZ());
 	}
 
 	void addRotation(T x, T y, T z) {
@@ -560,6 +577,9 @@ public:
 		addRotation(x, y, z);
 	}
 
+	void makeRotation(const Vec3<T>& vec) {
+		makeRotation(vec.getX(), vec.getY(), vec.getZ());
+	}
 
 };
 
