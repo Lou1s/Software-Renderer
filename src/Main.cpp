@@ -16,7 +16,6 @@ int main()
         engine->render();
 
     }
-    engine->shutdown();
     return 0;
 
 }

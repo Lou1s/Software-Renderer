@@ -38,7 +38,7 @@ void Engine::init() {
 }
 
 void Engine::setup() {
-	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\cube.obj");
+	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\f22.obj");
 	_mesh->translation.setZ(5);
 	_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
 }
@@ -92,7 +92,7 @@ void Engine::update() {
 	_previous_frame_time = SDL_GetTicks();
 	
 	// add any extra scales, rotatations or translations here
-	_mesh->rotation += Vector3(0, 200, 0);
+	_mesh->rotation += Vector3(6, 12, 3);
 	_mesh->computeTransform();
 
 	std::vector<Vector4> verts(_mesh->vertices);
