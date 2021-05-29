@@ -6,4 +6,4 @@ Rather than directly copy the C renderer taught in the Gustavo's course, I decid
 This is just a fun learning exerpience, nothing in this code will be highly optimised or efficient.
 
 Current status - backface culling, naive painter's algorithm and full matrix and vector library for transforms:
-![](wireframe.gif)
+![](f22.gif)
