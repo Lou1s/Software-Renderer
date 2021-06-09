@@ -1,13 +1,12 @@
 #pragma once
 #include "../include/MathUtils.h"
 #include "../include/Mesh.h"
+#include "../include/Display.h"
+#include "../include/Rasteriser.h"
 #include <memory>
 #include <vector>
 #include <iostream>
 
-class Display;
-class Rasteriser;
-class Mesh;
 
 class Engine
 {
@@ -28,9 +27,10 @@ private:
 	void SortTrianglesPainterAlgorithm();
 	float _translate_factor_x;
 
+	Mat4 _projection_matrix;
+
 public:
 	Engine();
-	~Engine();
 	void init();
 	void setup();
 	void setFlags(bool backface);

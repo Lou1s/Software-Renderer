@@ -1,6 +1,4 @@
 #include "../include/Engine.h"
-#include "../include/Display.h"
-#include "../include/Rasteriser.h"
 #include <math.h>
 #include <SDL_stdinc.h>
 #include <array>
@@ -16,15 +14,13 @@ Engine::Engine() :
 	_mesh_rotation(0, 2, 0),
 	_mesh(),
 	_backface_cull(true),
-	_translate_factor_x(0.2)
+	_translate_factor_x(0.2),
+	_projection_matrix()
+
 {
 
 }
 
-Engine::~Engine()
-{
-	//shutdown();
-}
 void Engine::init() {
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_DisplayMode display_mode;
@@ -33,6 +29,7 @@ void Engine::init() {
 	_rasteriser = std::make_unique<Rasteriser>(_display);
 	_is_running = true;
 	_mesh = std::make_unique<Mesh>();
+	
 
 
 }
@@ -41,6 +38,13 @@ void Engine::setup() {
 	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\f22.obj");
 	_mesh->translation.setZ(5);
 	_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
+
+	//set up projection matrix
+	 float aspect_ratio = float(_display->getWidth()) / _display->getHeight();
+	 float fov_angle = 30;
+	 float z_near = 0.5;
+	 float z_far = 1000;
+	 _projection_matrix.makeProjection(fov_angle, aspect_ratio, z_near, z_far);
 }
 
 void Engine::setFlags(bool backface) {

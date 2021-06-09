@@ -581,6 +581,17 @@ public:
 		makeRotation(vec.getX(), vec.getY(), vec.getZ());
 	}
 
+	void makeProjection(const T& fov_angle, const T& aspect_ratio, const T& z_near, const T& z_far) {
+		makeIdentity();
+		T fov_factor = 1 / (tan(degreesToRadians(fov_angle) / 2.0));
+		(*this)(0, 0) = aspect_ratio * fov_factor;
+		(*this)(1, 1) = fov_factor;
+		(*this)(2, 2) = z_far / (z_far - z_near);
+		(*this)(2, 3) = (-z_far * z_near) / (z_far - z_near);
+		(*this)(3, 2) = 1.0; //bit of a hack to save the original z value in the w component of vec4
+		(*this)(3, 3) = 0.0;
+	}
+
 };
 
 
