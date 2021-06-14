@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 Mesh::Mesh():
+	transform(),
 	scale(1, 1, 1),
 	rotation(0, 0, 0),
 	translation(0, 0, 0)
@@ -31,6 +32,7 @@ void getLineData(std::stringstream &ss_in, char delim, std::vector<std::string>&
 }
 
 Mesh::Mesh(const std::string& path_to_file): 
+	transform(),
 	scale(1, 1, 1),
 	rotation(0, 0, 0),
 	translation(0, 0, 0) 

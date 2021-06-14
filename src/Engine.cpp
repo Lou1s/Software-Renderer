@@ -8,7 +8,6 @@ Engine::Engine() :
 	_rasteriser(nullptr),
 	_display(nullptr),
 	_is_running(false),
-	_fov_factor(640),
 	_camera_pos(0, 0, -5),
 	_previous_frame_time(0),
 	_mesh_rotation(0, 2, 0),
@@ -35,15 +34,16 @@ void Engine::init() {
 }
 
 void Engine::setup() {
-	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\f22.obj");
-	_mesh->translation.setZ(5);
+	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\cube.obj");
+	_mesh->translation.setZ(50);
+	_mesh->scale.set(1.0, 1.0, 1.0);
 	_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
 
-	//set up projection matrix
-	 float aspect_ratio = float(_display->getWidth()) / _display->getHeight();
-	 float fov_angle = 30;
-	 float z_near = 0.5;
-	 float z_far = 1000;
+	//set up perspective projection matrix
+	 float aspect_ratio = float(_display->getHeight()) / float(_display->getWidth());
+	 float fov_angle = 90.0;
+	 float z_near = 0.1;
+	 float z_far = 100.0;
 	 _projection_matrix.makeProjection(fov_angle, aspect_ratio, z_near, z_far);
 }
 
@@ -72,21 +72,36 @@ void Engine::processInput() {
 	}
 }
 
-Vector2 Engine::project(const Vector3& vec) {
-	//using similar triangles here to get the projected x and y (perspective divide), basically the bigger the z the further away the point is, so the smaller it is on our screen.
-	float z = vec.getZ();
-	Vector2 proj_pt(vec.getX(), vec.getY());
-	proj_pt *= _fov_factor;
-	proj_pt /= z;
-	return proj_pt;
+Vector2 Engine::project(const Vector4& vec) {
+	Vector4 result = _projection_matrix * vec;
+	
+	if (result.getW() != 0.0) {
+		result /= result.getW();
+	}
+	return Vector2(result.getX(), result.getY());
 }
 
 Triangle Engine::project(const Triangle3D& tri) {
 	Triangle3D temp_tri(tri);
-	Triangle projected_tri(project(temp_tri.a()), project(temp_tri.b()), project(temp_tri.c()));
+	Triangle projected_tri(project(Vector4(temp_tri.a())), project(Vector4(temp_tri.b())), project(Vector4(temp_tri.c())));
 	return projected_tri;
 }
 
+
+Vector4 Engine::project3D(const Vector4& vec) {
+	Vector4 result = _projection_matrix * vec;
+
+	if (result.getW() != 0.0) {
+		result /= result.getW();
+	}
+	return result;
+}
+
+Triangle3D Engine::project3D(const Triangle3D& tri) {
+	Triangle3D temp_tri(tri);
+	Triangle3D projected_tri(project3D(temp_tri.a()), project3D(temp_tri.b()), project3D(temp_tri.c()));
+	return projected_tri;
+}
 
 void Engine::update() {
 	int time_to_wait = _display->FRAME_TARGET_TIME - (SDL_GetTicks() - _previous_frame_time);
@@ -96,7 +111,7 @@ void Engine::update() {
 	_previous_frame_time = SDL_GetTicks();
 	
 	// add any extra scales, rotatations or translations here
-	_mesh->rotation += Vector3(6, 12, 3);
+	_mesh->rotation += Vector3(6, 2, 4);
 	_mesh->computeTransform();
 
 	std::vector<Vector4> verts(_mesh->vertices);
@@ -117,9 +132,19 @@ void Engine::update() {
 		}
 
 		//project
-		Triangle tri = project(tri_3D);
-		//send to the middle f the screen
-		tri.translate(Vector2(_display->getWidth() / 2, _display->getHeight() / 2));
+		Triangle3D proj_tri = project3D(tri_3D);
+		
+		Vector3 proj_mod_trans(_display->getWidth() / 2.0, _display->getHeight() / 2.0, 0.0);
+		Vector3 proj_mod_scale(_display->getWidth() / 10.0, _display->getHeight() / 10.0, 1.0);
+		
+		//scale into the view
+		proj_tri.scale(proj_mod_scale);
+		
+		//translate to the middle of the screen
+		proj_tri.translate(proj_mod_trans);
+		
+
+		Triangle tri = proj_tri.to2D();
 		tri.avg_depth = tri_3D.getAverageDepth();
 		_rendering_triangles.push_back(tri);
 	}

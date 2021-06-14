@@ -7,6 +7,14 @@
 
 #include <array>
 #include <iostream>
+
+//forward declarations of vec3 and vec4 for use in constructors
+template <class T>
+class Vec4;
+
+template <class T>
+class Vec3;
+
 template <class T>
 class Vec2 {
 private:
@@ -15,6 +23,8 @@ public:
 	Vec2() : _xy{ 0.0, 0.0 } {}
 	Vec2(T x, T y) : _xy{ x, y } {}
 	Vec2(const Vec2& vec) : _xy{ vec._xy[0] , vec._xy[1] } {}
+	Vec2(const Vec4<T>& vec) : _xy{ vec.getX() , vec.getY() } {}
+	Vec2(const Vec3<T>& vec) : _xy{ vec.getX() , vec.getY() } {}
 
 	T getX() const { return _xy[0]; }
 	T getY() const { return _xy[1]; }
@@ -107,9 +117,7 @@ typedef Vec2<float> Vector2;
 typedef Vec2<double> Vector2_d;
 typedef Vec2<int> Vector2_I;
 
-//forward declaration of vec4 for use in a vec3 constructor
-template <class T>
-class Vec4;
+
 
 template <class T>
 class Vec3 {
@@ -588,8 +596,6 @@ public:
 		(*this)(1, 1) = fov_factor;
 		(*this)(2, 2) = z_far / (z_far - z_near);
 		(*this)(2, 3) = (-z_far * z_near) / (z_far - z_near);
-		(*this)(3, 2) = 1.0; //bit of a hack to save the original z value in the w component of vec4
-		(*this)(3, 3) = 0.0;
 	}
 
 };
