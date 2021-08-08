@@ -1,5 +1,5 @@
 # Software-Renderer
-C++ Software Renderer - based on the course taught by [Gustavo Pezzi](pikuma.com). Rather than directly copy the C renderer taught in the Gustavo's course, I decided it would be a better learning experience for me to create my own using C++. 
+C++ Software Renderer - based on the course taught by [Gustavo Pezzi](https://pikuma.com). Rather than directly copy the C renderer taught in the Gustavo's course, I decided it would be a better learning experience for me to create my own using C++. 
 
 This is just for fun, nothing in this code will be highly optimised or efficient. Everything here is done from complete scratch on the CPU. The only requirement is SDL2 for simply drawing a pixel on the screen.
 
