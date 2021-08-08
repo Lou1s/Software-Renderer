@@ -5,7 +5,7 @@ Rather than directly copy the C renderer taught in the Gustavo's course, I decid
 
 This is just a fun learning exerpience, nothing in this code will be highly optimised or efficient.
 
-To do: clipping, shading and texturing.
+To do: clipping, (more) shading and texturing.
 
-Current status - backface culling, naive painter's algorithm and full matrix and vector library for transforms:
-![](f22.gif)
+Current status - backface culling, naive painter's algorithm, (incredibly) basic lighting, full matrix and vector library for transforms (low poly car donated by [Gabriel Brennan](https://www.artstation.com/gabestheman):
+![](car.gif)
