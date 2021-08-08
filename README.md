@@ -7,5 +7,8 @@ This is just a fun learning exerpience, nothing in this code will be highly opti
 
 To do: clipping, (more) shading and texturing.
 
-Current status - backface culling, naive painter's algorithm, (incredibly) basic lighting, full matrix and vector library for transforms (low poly car donated by [Gabriel Brennan](https://www.artstation.com/gabestheman):
+Current status - backface culling, naive painter's algorithm, (incredibly) basic lighting, full matrix and vector library for transforms.
+
+
 ![](car.gif)
+Low poly car donated by [Gabriel Brennan](https://www.artstation.com/gabestheman).
