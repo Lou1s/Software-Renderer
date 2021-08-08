@@ -11,4 +11,5 @@ Current status - backface culling, naive painter's algorithm, (incredibly) basic
 
 
 ![](car.gif)
+
 Low poly car donated by [Gabriel Brennan](https://www.artstation.com/gabestheman).
