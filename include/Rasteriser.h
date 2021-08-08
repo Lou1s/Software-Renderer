@@ -24,6 +24,7 @@ public:
 	~Rasteriser();
 	void drawLine(const Vector2& vec1, const Vector2& vec2, Uint32 colour);
 	void drawTriangle(const Triangle& tri, Uint32 colour);
+
 	void drawGrid(Uint32 grid_colour);
 	void drawRectangle(int x, int y, int width, int height, Uint32 colour);
 	void setLineDrawingMethod(const LineDrawingMethod& line_draw);

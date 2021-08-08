@@ -144,7 +144,6 @@ void Rasteriser::fillTriangleFlatTop(const Triangle& tri, Uint32 colour) {
 	}
 }
 
-
 void Rasteriser::drawTriangle(const Triangle &tri, Uint32 colour)
 {	
 	Triangle tri_int(tri);
