@@ -5,7 +5,7 @@ This is just for fun, nothing in this code will be highly optimised or efficient
 
 **To do:** clipping, (more) shading and texturing.
 
-**Current status** - backface culling, naive painter's algorithm, (incredibly) basic lighting, full matrix and vector library for transforms.
+**Current status:** backface culling, naive painter's algorithm, (incredibly) basic lighting, full matrix and vector library for transforms.
 
 
 ![](car.gif)
