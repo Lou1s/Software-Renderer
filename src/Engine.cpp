@@ -34,7 +34,7 @@ void Engine::init() {
 }
 
 void Engine::setup() {
-	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\cube.obj");
+	_mesh->loadFromFile("D:\\Projects\\Software-Renderer\\assets\\car_lowpoly.obj");
 	_mesh->translation.setZ(50);
 	_mesh->scale.set(1.0, 1.0, 1.0);
 	_rasteriser->setTriangleDrawingMethod(TriangleDrawingMethod::FBFT);
@@ -89,8 +89,9 @@ Triangle Engine::project(const Triangle3D& tri) {
 
 
 Vector4 Engine::project3D(const Vector4& vec) {
+	//perpective projection
 	Vector4 result = _projection_matrix * vec;
-
+	//perspective divide - currently displays things that are behind the camera (dividing by negative simply flips the x and y)
 	if (result.getW() != 0.0) {
 		result /= result.getW();
 	}
