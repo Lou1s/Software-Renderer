@@ -10,4 +10,4 @@ This is just for fun, nothing in this code will be highly optimised or efficient
 
 ![](car.gif)
 
-Low poly car donated by [Gabriel Brennan](https://www.artstation.com/gabestheman).
+Low poly car donated by [Gabriel Brennan](https://www.artstation.com/gabrielcbrennan).
