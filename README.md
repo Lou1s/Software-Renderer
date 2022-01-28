@@ -3,8 +3,6 @@ C++ Software Renderer - based on the course taught by [Gustavo Pezzi](https://pi
 
 This is just for fun, nothing in this code will be highly optimised or efficient. Everything here is done from complete scratch on the CPU. The only requirement is SDL2 for simply drawing a pixel on the screen.
 
-**To do:** clipping, (more) shading and texturing.
-
 **Current status:** backface culling, naive painter's algorithm, (incredibly) basic lighting, full matrix and vector library for transforms.
 
 
